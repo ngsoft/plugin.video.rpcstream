@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.rpcstream" name="RPC Stream" version="1.2.0" provider-name="NGSOFT">
+    <requires>
+        <import addon="script.module.six" />
+        <import addon="script.module.kodi-six" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Plays Streams send by JSONRPC Request</summary>
+        <description lang="en_GB"></description>
+        <platform>all</platform>
+        <license>MIT</license>
+        <website>https://github.com/ngsoft</website>
+        <email>daedelus.git@gmail.com</email>
+        <disclaimer></disclaimer>
+        <assets>
+            <icon>resources/icon.png</icon>
+        </assets>
+    </extension>
+</addon>
