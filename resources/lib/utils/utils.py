@@ -1,10 +1,10 @@
-from .constants import *
+from .constants import ADDON, ADDON_NAME, ADDON_ICON
 import logger
 
-from kodi_six import xbmc, xbmcaddon, xbmcgui
+from kodi_six import xbmcgui
 
 
-def notify(message=None, header=ADDON_NAME,  time=5000, icon=ADDON.getAddonInfo('icon'), sound=True):
+def notify(message=None, header=ADDON_NAME,  time=5000, icon=ADDON_ICON, sound=True):
     if (message != None):
         xbmcgui.Dialog().notification(header, message, icon, time, sound)
 

@@ -8,7 +8,9 @@ ADDON_VERSION = ADDON.getAddonInfo('version')
 ADDON_NAME = ADDON.getAddonInfo('name')
 ADDON_PATH = xbmc.translatePath(ADDON.getAddonInfo('path'))
 ADDON_PROFILE = xbmc.translatePath(ADDON.getAddonInfo('profile'))
-
+ADDON_ICON = ADDON.getAddonInfo('icon')
+ADDON_FANART = ADDON.getAddonInfo('fanart')
+ADDON_DEV = bool(int(os.environ.get('ADDON_DEV', '0')))
 ##### Kodi #####
 try:
     KODI_VERSION = int(xbmc.getInfoLabel("System.BuildVersion").split('.')[0])
