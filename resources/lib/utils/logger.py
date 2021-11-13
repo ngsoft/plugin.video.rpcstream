@@ -1,6 +1,5 @@
 
-import xbmc
-import xbmcaddon
+from kodi_six import xbmc, xbmcaddon
 from .constants import ADDON_ID
 
 DEBUG = xbmc.LOGDEBUG
@@ -12,9 +11,7 @@ FATAL = xbmc.LOGFATAL
 NONE = xbmc.LOGNONE
 
 
-def log(text, log_level=WARNING, addon_id=ADDON_ID):
-    if not addon_id:
-        addon_id = xbmcaddon.Addon().getAddonInfo('id')
+def log(text, log_level=DEBUG, addon_id=ADDON_ID):
     log_line = '[%s] %s' % (addon_id, text)
     xbmc.log(msg=log_line, level=log_level)
 
@@ -31,7 +28,7 @@ def notice(text, addon_id=ADDON_ID):
     log(text, NOTICE, addon_id)
 
 
-def warning(text, addon_id=ADDON_ID):
+def warn(text, addon_id=ADDON_ID):
     log(text, WARNING, addon_id)
 
 
