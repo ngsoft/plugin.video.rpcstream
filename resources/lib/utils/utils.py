@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .constants import ADDON, ADDON_NAME, ADDON_ICON
 import logger
 

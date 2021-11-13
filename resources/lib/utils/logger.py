@@ -1,5 +1,7 @@
 
-from kodi_six import xbmc, xbmcaddon
+# -*- coding: utf-8 -*-
+
+from kodi_six import xbmc
 from .constants import ADDON_ID
 
 DEBUG = xbmc.LOGDEBUG

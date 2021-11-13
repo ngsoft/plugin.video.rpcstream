@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from kodi_six import xbmc, xbmcaddon
 
@@ -11,14 +12,14 @@ ADDON_PROFILE = xbmc.translatePath(ADDON.getAddonInfo('profile'))
 ADDON_ICON = ADDON.getAddonInfo('icon')
 ADDON_FANART = ADDON.getAddonInfo('fanart')
 ADDON_DEV = bool(int(os.environ.get('ADDON_DEV', '0')))
+
 ##### Kodi #####
 try:
     KODI_VERSION = int(xbmc.getInfoLabel("System.BuildVersion").split('.')[0])
 except:
     KODI_VERSION = 16
 
-
-##### IA #####
+##### INPUTSTREAM ADAPTIVE #####
 IA_ADDON_TYPE = 'inputstream'
 IA_ADDON = 'inputstream.adaptive'
 IA_VERSION_KEY = '_version'
