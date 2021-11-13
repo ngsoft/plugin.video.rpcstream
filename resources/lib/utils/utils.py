@@ -55,3 +55,11 @@ def get_string(string_id):
 
 def log(message):
     logger.warn(text=message)
+
+
+def decode(str, mode='utf8'):
+    try:
+        str = str.decode(mode)
+    except:
+        pass
+    return str
