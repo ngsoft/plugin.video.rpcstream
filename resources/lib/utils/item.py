@@ -10,7 +10,7 @@ from . import subs
 
 class Item(object):
 
-    def __init__(self, title=None, plot=None, url=None, subtitles=None, image=None, fanart=None, headers={}):
+    def __init__(self, title=None, plot=None, url=None, subtitles=None, image='', fanart='', headers={}):
         self._listItem = xbmcgui.ListItem(offscreen=True)
         self._title = title
         self._plot = plot
@@ -53,17 +53,34 @@ class Item(object):
     def setFanart(self, fanart):
         self._fanart = fanart
 
+    def getTitle(self):
+        return self._title
+
+    def getPlot(self):
+        return self._plot
+
+    def getUrl(self):
+        return self._url
+
+    def getImage(self):
+        return self._image
+
+    def getFanart(self):
+        return self._fanart
+
     def getListItem(self):
         li = self._listItem
         title = self._title if self._title != None else ''
         plot = self._plot if self._plot != None else title
-        headers = ''
-
+        headers = self.getHeaderLine()
         if self._url != None:
-            url = '%s|%s' % (self._url, self.getHeaderLine())
+            url = '%s|%s' % (self._url, headers) if len(
+                headers) > 0 else self._url
 
         li.setLabel(self._title)
         li.setInfo('video', {'title': title, 'plot': plot})
+        li.setArt({'icon': self._image, 'thumb': self._image,
+                  'fanart': self._fanart})
 
         return li
 
