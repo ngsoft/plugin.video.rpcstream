@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from kodi_six import xbmc
 from .constants import ADDON, ADDON_NAME, ADDON_ICON
-import logger
+from . import logger
+import time
 
 from kodi_six import xbmcgui
 
@@ -64,3 +66,12 @@ def decode(str, mode='utf8'):
     except:
         pass
     return str
+
+
+def waitForPlayback(timeout=30):
+    timer = time.time() + timeout
+    while not xbmc.getCondVisibility("Player.HasMedia"):
+        xbmc.sleep(50)
+        if time.time() > timer:
+            return False
+    return xbmc.getCondVisibility("Player.HasMedia")
