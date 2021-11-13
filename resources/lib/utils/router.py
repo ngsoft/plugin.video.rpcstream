@@ -63,6 +63,17 @@ def url_for(full_path):
     return base_url + full_path
 
 
+def get_query_params(query=None):
+    result = {}
+    if(query == None):
+        query = ''
+        if len(sys.argv) > 2:
+            query = sys.argv[2][:1]
+    if(len(query > 0)):
+        result = dict(parser.parse_qsl(query))
+    return result
+
+
 def urlparse():
     global base_url, full_path, path, query
     (scheme, netloc, path, params, query, fragment) = parser.urlparse(url)
