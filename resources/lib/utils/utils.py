@@ -23,7 +23,7 @@ def get_string(string_id):
     return value
 
 
-def log(message):
+def debug(message):
     if SETTING_DEBUG == True:
         logger.warn(text=message, addon_id=ADDON_NAME)
 

@@ -4,27 +4,27 @@ from six.moves import urllib_parse
 from .constants import *
 from .router import handle
 from utils import *
-import time
 from . import subs
 
 
-IA_ADDON_EXISTS = False
+if SETTING_IA == True:
+    IA_ADDON_EXISTS = False
 
-# checks if IA Addon exists
-try:
-    xbmcaddon.Addon(id=IA_ADDON)
-    IA_ADDON_EXISTS = True
-except:
-    pass
-
-# On leia using testing if available
-if KODI_VERSION == 18:
+    # checks if IA Addon exists
     try:
-        xbmcaddon.Addon(id=IA_TESTING_ID)
-        IA_ADDON = IA_TESTING_ID
+        xbmcaddon.Addon(id=IA_ADDON)
         IA_ADDON_EXISTS = True
     except:
         pass
+
+    # On leia using testing if available
+    if KODI_VERSION == 18:
+        try:
+            xbmcaddon.Addon(id=IA_TESTING_ID)
+            IA_ADDON = IA_TESTING_ID
+            IA_ADDON_EXISTS = True
+        except:
+            pass
 
 
 class Item(object):
@@ -105,32 +105,35 @@ class Item(object):
 
     def getInputStreamAdaptiveListItem(self, manifest_type, mimetype):
         li = self.getListItem()
-        if IA_ADDON_EXISTS == True:
-            li.setProperty(IA_ADDON_TYPE,  IA_ADDON)
-            li.setProperty('%s.manifest_type' % (IA_ADDON), manifest_type)
-            li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
-            li.setProperty('%s.stream_headers' %
-                           (IA_ADDON), self.getHeaderLine())
-            self._isIA = True
+        if SETTING_IA == True:
+            if IA_ADDON_EXISTS == True:
+                li.setProperty(IA_ADDON_TYPE,  IA_ADDON)
+                li.setProperty('%s.manifest_type' % (IA_ADDON), manifest_type)
+                li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
+                li.setProperty('%s.stream_headers' %
+                               (IA_ADDON), self.getHeaderLine())
+                self._isIA = True
+            else:
+                debug('%s not present, functionality disabled.' % (IA_ADDON))
         else:
-            log('%s not present, functionality disabled.' % (IA_ADDON))
+            debug('%s disabled in settings.' % (IA_ADDON))
         return li
 
-    def playHLS(self, notif=False):
+    def playHLS(self):
         li = self.getInputStreamAdaptiveListItem(
             'hls', 'application/vnd.apple.mpegurl')
         if self._isIA == True:
             li.setProperty('%s.minversion' % (IA_ADDON), IA_HLS_MIN_VER)
-        return self.play(notif)
+        return self.play()
 
-    def playDash(self, notif=False):
+    def playDash(self):
         li = self.getInputStreamAdaptiveListItem(
             'mpd', 'application/dash+xml')
         if self._isIA == True:
             li.setProperty('%s.minversion' % (IA_ADDON), IA_MPD_MIN_VER)
-        return self.play(notif)
+        return self.play()
 
-    def play(self, notif=False):
+    def play(self):
         li = self.getListItem()
         li.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(handle, True, li)
@@ -143,12 +146,11 @@ class Item(object):
             xbmc.Player().play(self._url, li)
             if not waitForPlayback(10):
                 li.setProperty('IsPlayable', 'false')
-                log('Cannot play %s: %s' % (self._title, self._url))
-                if notif == True:
-                    notify('Cannot play %s' % (self._title))
+                debug('Cannot play %s: %s' % (self._title, self._url))
+                notify('Cannot play %s' % (self._title))
             return False
-        if notif == True:
-            notify('Playing %s' % (self._title))
+
+        notify('Playing %s' % (self._title))
 
         if self._subtitles != None:
             set = False
@@ -159,8 +161,7 @@ class Item(object):
                     set = subs.set(file)
 
             if set == False:
-                log('Cannot set subtitles %s' % (self._subtitles))
-                if notif == True:
-                    notify('Cannot load subtitles.')
+                debug('Cannot set subtitles %s' % (self._subtitles))
+                notify('Cannot load subtitles.')
 
         return True

@@ -8,7 +8,7 @@ from utils import router
 from utils.constants import *
 from six.moves import urllib_parse
 
-from utils.utils import log, b64load, notify
+from utils.utils import debug, b64load, notify
 from utils import logger, item
 
 from utils.settings import *
@@ -57,7 +57,6 @@ def _():
 
 @router.route('/play')
 def _():
-    log(str(router.query))
     notif = True
     url = None
     subtitles = None
@@ -86,12 +85,12 @@ def _():
 
     # legacy support
     if 'useragent' in params:
-        log('Using deprecated param: useragent')
+        debug('Using deprecated param: useragent')
         headers['User-Agent'] = params['useragent']
 
     # legacy support
     if 'referer' in params:
-        log('Using deprecated param: referer')
+        debug('Using deprecated param: referer')
         ref = params['referer']
         headers['Referer'] = ref
         # Also add origin for cors
@@ -103,7 +102,7 @@ def _():
 
     # log params
     for key in params:
-        log('%s => %s' % (key, params[key]))
+        debug('%s => %s' % (key, params[key]))
 
     if 'subtitles' in params and params['subtitles'].startswith('http'):
         subtitles = params['subtitles']
