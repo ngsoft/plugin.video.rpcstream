@@ -53,3 +53,5 @@ SETTING_NOTIFY = settings.get_setting_as_bool('rpcstream.notify')
 SETTING_IA = settings.get_setting_as_bool('rpcstream.ia')
 # <setting id="rpcstream.debug" type="bool" label="Debug Mode" default="false"/>
 SETTING_DEBUG = settings.get_setting_as_bool('rpcstream.debug')
+# <setting id="rpcstream.history" label="History Size" type="slider" default="50" range="0,10,500" option="int"/>
+SETTING_HISTORY = settings.get_setting_as_int('rpcstream.history')

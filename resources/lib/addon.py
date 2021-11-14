@@ -7,7 +7,7 @@ from utils import router
 from utils.constants import *
 from six.moves import urllib_parse
 
-from utils.utils import debug, b64load,  notify
+from utils.utils import debug, b64load,  notify, alert, confirm
 from utils import logger
 
 from utils.items.videoitem import VideoItem
@@ -16,6 +16,8 @@ from utils.items.item import Item
 
 from utils.settings import *
 from utils.icons import *
+
+from utils import resolver
 
 
 # params = {
@@ -33,9 +35,10 @@ from utils.icons import *
 # Main Menu
 @router.route('/', url=False, request=False)
 def _():
-    dir = Directory(ADDON_NAME)
-    dir.addItem(Item('History', router.url_for('/history'), ICON_USER))
-    dir.addItem(Item('History', router.url_for('/settings'), ICON_PROGRAM))
+    dir = Directory()
+    dir.addItem(Item('History', router.url_for(
+        '/history'), ICON_VIDEOPLAYLISTS, True))
+    dir.addItem(Item('Settings', router.url_for('/settings'), ICON_PROGRAM))
     dir.render()
 
 
@@ -51,9 +54,26 @@ def _():
     router.redirect('/play', True)
 
 
-@router.route('/history')
+@router.route('/history', clear=False)
 def _():
+
+    dir = Directory('videos')
+    dir.addItem(Item('No entry found.', router.url_for(
+        '/'), ICON_RECENTLYADDEDEPISODES))
+
+    dir.addItem(Item('Clear History.', router.url_for(
+        '/history?clear=1'), ICON_TVSHOWS, True))
+    dir.render()
+
     return
+
+
+@router.route('/history', clear=True)
+def _():
+    if confirm('Would you like to clear the history.') == True:
+        alert('History Cleared !')
+
+    router.redirect('/')
 
 
 @router.route('/settings')

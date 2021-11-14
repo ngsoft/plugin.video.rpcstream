@@ -56,7 +56,7 @@ from ..icons import ICON_ADDON
 
 class Item(object):
 
-    def __init__(self, title=None, path=None, icon=''):
+    def __init__(self, title=None, path=None, icon='', isDir=False):
 
         self._title = title
         self._path = path
@@ -67,6 +67,7 @@ class Item(object):
         self._thumb = ''
         self._banner = ''
 
+        self._isDir = bool(isDir)
         self._info = {}
         self._listItem = xbmcgui.ListItem(offscreen=True)
 
@@ -118,9 +119,13 @@ class Item(object):
     def getInfo(self):
         return self._info
 
+    def getIsDir(self):
+        return self._isDir
+
     def getListItem(self):
         li = self._listItem
         li.setLabel(self._title)
+        # li.setIsFolder(self._isDir)
         li.setArt({
             'thumb': self._thumb,
             'poster': self._poster,

@@ -49,7 +49,8 @@ class Directory(object):
                 self._handle, xbmcplugin.SORT_METHOD_DATEADDED)
 
         for item in self._items:
+
             xbmcplugin.addDirectoryItem(
-                self._handle, item.getPath(), item.getListItem(), True, total)
+                self._handle, item.getPath(), item.getListItem(), item.getIsDir(), total)
         self._displayed = True
         xbmcplugin.endOfDirectory(self._handle)

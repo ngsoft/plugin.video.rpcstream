@@ -9,6 +9,14 @@ from six import PY2
 import codecs
 
 
+def alert(message, title=ADDON_NAME):
+    return xbmcgui.Dialog().ok(title, message)
+
+
+def confirm(question, title=ADDON_NAME):
+    return xbmcgui.Dialog().yesno(title, question)
+
+
 def notify(message=None, header=ADDON_NAME,  time=5000, icon=ADDON_ICON, sound=True):
     if (message != None and SETTING_NOTIFY == True):
         xbmcgui.Dialog().notification(header, message, icon, time, sound)

@@ -2,7 +2,15 @@
 <settings>
     <category label="General">
         <setting id="rpcstream.notify" type="bool" label="Enable Notifications" default="true"/>
+        <setting type="sep"/>
+        <setting id="rpcstream.history" label="History Size" type="slider" default="50" range="0,10,500" option="int"/>
+    </category>
+    <category label="Advanced">
         <setting id="rpcstream.ia" type="bool" label="Use InputStream Adaptive if available" default="true"/>
+        <setting type="sep"/>
+        <setting id="rpcstream.urlresolver" type="bool" label="Use UrlResolver if available" default="true"/>
+        <setting id="rpcstream.resolveurl" type="bool" label="Use ResolveUrl if available" default="true"/>
+        <setting type="sep"/>
         <setting id="rpcstream.debug" type="bool" label="Debug Mode" default="false"/>
     </category>
 </settings>

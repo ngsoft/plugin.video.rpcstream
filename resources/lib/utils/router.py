@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import six.moves.urllib_parse as parser
-from utils import decode
+from utils import debug
 
 try:
     from re import fullmatch
@@ -15,6 +15,7 @@ except:
 def redirect(full_path, keepQueryString=False):
     global url
     url = url_for(full_path, keepQueryString)
+    debug('redirecting to %s' % (url))
     urlparse()
     run()
 
