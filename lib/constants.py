@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from kodi_six import xbmc, xbmcaddon
-from . import settings
+from utils import settings
 
 ##### ADDON ####
 ADDON = xbmcaddon.Addon(os.environ.get('ADDON_ID', ''))

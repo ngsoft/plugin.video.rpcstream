@@ -4,13 +4,13 @@ import re
 from six.moves import urllib_parse
 
 
-from .utils.constants import *
+from .constants import *
+
 from .utils.settings import *
 from .utils.icons import *
 
-from .utils.items.videoitem import VideoItem
-from .utils.items.directory import Directory
-from .utils.items.item import Item
+from items import *
+
 from .utils.history import History
 
 from .utils.utils import debug, b64load,  notify, alert, confirm
@@ -192,4 +192,5 @@ def _():
     hist.close()
 
 
-router.run()
+def run():
+    router.run()

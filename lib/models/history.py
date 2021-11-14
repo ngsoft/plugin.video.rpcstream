@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .db import SQLiteDataBase
+from ..db import SQLiteDataBase
 from .constants import SETTING_HISTORY
 
 
@@ -23,7 +23,7 @@ class History(SQLiteDataBase, object):
         if len(ids) > self._max:
             for id in ids:
                 cnt += 1
-                if cnt > self._max:
+                if cnt > self._max and int(id) > 0:
                     self.execQuery('DELETE FROM history WHERE id < ?', [id])
                     break
 

@@ -1,3 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from resources.lib import addon
+from lib import addon
+
+
+addon.run()

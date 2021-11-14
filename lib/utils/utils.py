@@ -5,7 +5,6 @@ from kodi_six import xbmc, xbmcgui
 from .constants import ADDON, ADDON_NAME, ADDON_ICON, SETTING_DEBUG, SETTING_NOTIFY
 from . import logger
 import time
-from six import PY2
 import codecs
 
 
