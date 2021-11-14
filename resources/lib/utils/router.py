@@ -2,6 +2,8 @@
 import sys
 import six.moves.urllib_parse as parser
 
+from utils import log
+
 
 try:
     from re import fullmatch
@@ -12,9 +14,11 @@ except:
         return re.match(r"(?:" + regex + r")\Z", string, flags=flags)
 
 
-def redirect(full_path):
+def redirect(full_path, keepQueryString=False):
     global url
     url = url_for(full_path)
+    if keepQueryString == True and query_str:
+        url += '?%s' % (query_str)
     urlparse()
     run()
 
@@ -67,10 +71,8 @@ def url_for(full_path):
 
 def get_query_params(queryString=None):
     result = {}
-    if queryString == None:
-        queryString = ''
-        if len(sys.argv) > 2:
-            queryString = sys.argv[2]
+    if queryString == None and query_str:
+        queryString = query_str
     if len(queryString) > 0:
         if queryString.startswith('?'):
             queryString = queryString[1:]
@@ -79,11 +81,11 @@ def get_query_params(queryString=None):
 
 
 def urlparse():
-    global base_url, full_path, path, query
-    (scheme, netloc, path, params, query, fragment) = parser.urlparse(url)
+    global base_url, full_path, path, query, query_str
+    (scheme, netloc, path, params, query_str, fragment) = parser.urlparse(url)
     base_url = '%s://%s' % (scheme, netloc)
-    full_path = '%s?%s' % (path, query) if query else path
-    query = parser.parse_qs(query)
+    full_path = '%s?%s' % (path, query_str) if query_str else path
+    query = parser.parse_qs(query_str)
 
 
 base_url = None
@@ -91,6 +93,7 @@ full_path = None
 handle = int(sys.argv[1])
 path = None
 query = None
+query_str = None
 routedict = {}
 url = sys.argv[0] + sys.argv[2]
 urlparse()

@@ -2,11 +2,13 @@
 import base64
 import re
 import sys
+
+from six.moves.urllib import request
 from utils import router
 from utils.constants import *
 from six.moves import urllib_parse
 
-from utils.utils import log, b64load, notify
+from utils.utils import log, b64load, notify, show_settings
 from utils import logger, item
 
 import xbmcaddon
@@ -24,8 +26,37 @@ import xbmcaddon
 # }
 
 
-@router.route('/')
+@router.route('/', url=False, request=False)
 def _():
+
+    return
+
+
+# route with url
+@router.route('/', url=True)
+def _():
+    router.redirect('/play', True)
+
+
+# route with request
+@router.route('/', request=True)
+def _():
+    router.redirect('/play', True)
+
+
+@router.route('/history')
+def _():
+    return
+
+
+@router.route('/settings')
+def _():
+    show_settings()
+
+
+@router.route('/play')
+def _():
+    log(str(router.query))
     notif = True
     url = None
     subtitles = None

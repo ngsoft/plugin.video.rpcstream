@@ -7,7 +7,6 @@
         <import addon="script.module.urlresolver" optional="true" />
         <import addon="inputstream.adaptive" optional="true" />
         <import addon="inputstream.adaptive.testing" optional="true" />
-
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
