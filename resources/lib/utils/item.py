@@ -7,6 +7,14 @@ from utils import *
 import time
 from . import subs
 
+# checks if IA Addon exists
+IA_ADDON_EXISTS = False
+try:
+    xbmcaddon.Addon(id=IA_ADDON)
+    IA_ADDON_EXISTS = True
+except:
+    pass
+
 
 class Item(object):
 
@@ -76,7 +84,7 @@ class Item(object):
         if self._url != None:
             url = '%s|%s' % (self._url, headers) if len(
                 headers) > 0 else self._url
-
+        li.setPath(url)
         li.setLabel(self._title)
         li.setInfo('video', {'title': title, 'plot': plot})
         li.setArt({'icon': self._image, 'thumb': self._image,
@@ -86,33 +94,42 @@ class Item(object):
 
     def getInputStreamAdaptiveListItem(self, manifest_type, mimetype):
         li = self.getListItem()
-        li.setProperty(IA_ADDON_TYPE,  IA_ADDON)
-        li.setProperty('%s.manifest_type' % (IA_ADDON), manifest_type)
-        li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
-        li.setProperty('%s.stream_headers' % (IA_ADDON), self.getHeaderLine())
-        self._isIA = True
+        if IA_ADDON_EXISTS == True:
+            li.setProperty(IA_ADDON_TYPE,  IA_ADDON)
+            li.setProperty('%s.manifest_type' % (IA_ADDON), manifest_type)
+            li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
+            li.setProperty('%s.stream_headers' %
+                           (IA_ADDON), self.getHeaderLine())
+            self._isIA = True
+        else:
+            log('%s not present, functionality disabled.' % (IA_ADDON))
         return li
 
     def playHLS(self, notif=False):
         li = self.getInputStreamAdaptiveListItem(
             'hls', 'application/vnd.apple.mpegurl')
-        li.setProperty('%s.minversion' % (IA_ADDON), IA_HLS_MIN_VER)
+        if self._isIA == True:
+            li.setProperty('%s.minversion' % (IA_ADDON), IA_HLS_MIN_VER)
         return self.play(notif)
 
     def playDash(self, notif=False):
         li = self.getInputStreamAdaptiveListItem(
             'mpd', 'application/dash+xml')
-        li.setProperty('%s.minversion' % (IA_ADDON), IA_MPD_MIN_VER)
+        if self._isIA == True:
+            li.setProperty('%s.minversion' % (IA_ADDON), IA_MPD_MIN_VER)
         return self.play(notif)
 
     def play(self, notif=False):
         li = self.getListItem()
         li.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(handle, True, li)
+
         if not waitForPlayback(10):
             li.setPath(self._url)
-            li.setProperty(IA_ADDON_TYPE, '')
-            self._isIA = False
+            if self._isIA == True:
+                li.setProperty(IA_ADDON_TYPE, '')
+                self._isIA = False
+            xbmc.Player().play(self._url, li)
             if not waitForPlayback(10):
                 li.setProperty('IsPlayable', 'false')
                 log('Cannot play %s: %s' % (self._title, self._url))

@@ -9,6 +9,7 @@ from six.moves import urllib_parse
 from utils.utils import log, b64load, notify
 from utils import logger, item
 
+import xbmcaddon
 
 # params = {
 #    'request': {}, # b64encoded json string
@@ -25,6 +26,7 @@ from utils import logger, item
 
 @router.route('/')
 def _():
+    notif = True
     url = None
     subtitles = None
     mode = None
@@ -61,17 +63,17 @@ def _():
         # Also add origin for cors
         if 'Origin' not in headers:
             parsed = urllib_parse.urlparse(ref)
-            headers['Origin'] = '%s://%s' % (parsed.scheme + parsed.netloc)
+            headers['Origin'] = '%s://%s' % (parsed.scheme, parsed.netloc)
 
     params['headers'] = headers
 
     # log params
     for key in params:
-        log('%s => %s', key, params[key])
+        log('%s => %s' % (key, params[key]))
 
     if 'subtitles' in params and params['subtitles'].startswith('http'):
         subtitles = params['subtitles']
-    if 'url' not in params or params['url'].startwith('http') == False:
+    if 'url' not in params or params['url'].startswith('http') == False:
         msg = 'Invalid URL Provided !'
         logger.error(msg)
         notify(msg)
@@ -98,6 +100,12 @@ def _():
     # Create Item
     kodiItem = item.Item(title=title, url=url,
                          subtitles=subtitles, headers=headers)
+    if mode == PLAY_MODE_DASH:
+        kodiItem.playDash(notif)
+    elif mode == PLAY_MODE_HLS:
+        kodiItem.playHLS(notif)
+    else:
+        kodiItem.play(notif)
 
 
 router.run()
