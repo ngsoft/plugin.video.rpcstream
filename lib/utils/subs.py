@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from kodi_six import xbmc
-from six.moves import urllib_request, urllib_parse
-from .constants import USER_AGENT, ADDON_ID
-from .utils import waitForPlayback, debug
+import six
+from ..constants import USER_AGENT, ADDON_ID
+from . import waitForPlayback, debug
 import time
+
+urllib_request = six.moves.urllib.request
+urllib_parse = six.moves.urllib_parse
 
 
 def download(url, headers={'User-Agent': USER_AGENT}):

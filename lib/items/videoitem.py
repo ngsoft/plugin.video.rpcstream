@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import sys
-from kodi_six import xbmcgui, xbmc, xbmcplugin
 import six
-
+from kodi_six import xbmc, xbmcplugin
 from ..constants import *
 from ..utils import *
-from ..utils import subs
 from . import Item
 
 urllib_parse = six.moves.urllib_parse
