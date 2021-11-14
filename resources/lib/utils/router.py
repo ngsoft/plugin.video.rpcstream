@@ -14,9 +14,7 @@ except:
 
 def redirect(full_path, keepQueryString=False):
     global url
-    url = url_for(full_path)
-    if keepQueryString == True and query_str:
-        url += '?%s' % (query_str)
+    url = url_for(full_path, keepQueryString)
     urlparse()
     run()
 
@@ -63,8 +61,11 @@ def run():
                     return
 
 
-def url_for(full_path):
-    return base_url + full_path
+def url_for(full_path, keepQueryString=False):
+    result = base_url + full_path
+    if keepQueryString == True and query_str:
+        result += '?%s' % (query_str)
+    return result
 
 
 def get_query_params(queryString=None):
