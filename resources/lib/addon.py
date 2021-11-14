@@ -8,10 +8,11 @@ from utils import router
 from utils.constants import *
 from six.moves import urllib_parse
 
-from utils.utils import log, b64load, notify, show_settings
+from utils.utils import log, b64load, notify
 from utils import logger, item
 
-import xbmcaddon
+from utils.settings import *
+
 
 # params = {
 #    'request': {}, # b64encoded json string
@@ -141,5 +142,9 @@ def _():
     else:
         kodiItem.play(notif)
 
+
+logger.warn('notify %s' % (SETTING_NOTIFY))
+logger.warn('ia %s' % (SETTING_IA))
+logger.warn('debug %s' % (SETTING_DEBUG))
 
 router.run()

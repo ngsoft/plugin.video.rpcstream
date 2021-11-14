@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
+from kodi_six import xbmcaddon
 
-from .constants import ADDON
-
-from . import logger
+ADDON = xbmcaddon.Addon(os.environ.get('ADDON_ID', ''))
 
 
 def show_settings():
@@ -38,16 +38,3 @@ def get_setting_as_int(setting):
         return int(get_setting_as_float(setting))
     except ValueError:
         return 0
-
-
-# <setting id="rpcstream.notify" type="bool" label="Enable Notifications" default="true"/>
-SETTING_NOTIFY = get_setting_as_bool('rpcstream.notify')
-# <setting id="rpcstream.ia" type="bool" label="Use InputStream Adaptive if available" default="true"/>
-SETTING_IA = get_setting_as_bool('rpcstream.ia')
-# <setting id="rpcstream.debug" type="bool" label="Debug Mode" default="false"/>
-SETTING_DEBUG = get_setting_as_bool('rpcstream.debug')
-
-
-logger.warn('notify %s' % (SETTING_NOTIFY))
-logger.warn('ia %s' % (SETTING_IA))
-logger.warn('debug %s' % (SETTING_DEBUG))

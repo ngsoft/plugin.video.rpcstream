@@ -2,7 +2,7 @@
 import base64
 import json
 from kodi_six import xbmc
-from .constants import ADDON, ADDON_NAME, ADDON_ICON
+from .constants import ADDON, ADDON_NAME, ADDON_ICON, SETTING_DEBUG, SETTING_NOTIFY
 from . import logger
 import time
 
@@ -10,7 +10,7 @@ from kodi_six import xbmcgui
 
 
 def notify(message=None, header=ADDON_NAME,  time=5000, icon=ADDON_ICON, sound=True):
-    if (message != None):
+    if (message != None and SETTING_NOTIFY == True):
         xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 
@@ -24,7 +24,8 @@ def get_string(string_id):
 
 
 def log(message):
-    logger.warn(text=message, addon_id=ADDON_NAME)
+    if SETTING_DEBUG == True:
+        logger.warn(text=message, addon_id=ADDON_NAME)
 
 
 def decode(string, mode='utf8'):
