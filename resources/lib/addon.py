@@ -146,6 +146,10 @@ def _():
             mode = PLAY_MODE_HLS
         elif re.search(r'\.(json|dash|mpd)', url) != None:
             mode = PLAY_MODE_DASH
+    params['mode'] = mode
+
+    # log params
+    debug(params)
 
     mode = int(mode)
     if mode not in [PLAY_MODE_DEFAULT, PLAY_MODE_HLS, PLAY_MODE_DASH]:
@@ -153,7 +157,14 @@ def _():
         logger.error(msg)
         notify(msg)
 
-    mode = PLAY_MODE_HLS
+    if resolver.ENABLED == True:
+        resolved = resolver.resolve(url)
+        if resolved != url and isinstance(resolved, str):
+            kodiItem = VideoItem(title=title, path=resolved,
+                                 subtitles=subtitles, headers=None)
+            kodiItem.play()
+            return
+
     # Create Item
     kodiItem = VideoItem(title=title, path=url,
                          subtitles=subtitles, headers=headers)
@@ -163,9 +174,6 @@ def _():
         kodiItem.playHLS()
     else:
         kodiItem.play()
-
-    # log params
-    debug(params)
 
 
 router.run()

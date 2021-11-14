@@ -45,7 +45,11 @@ class VideoItem(Item, object):
         return self._headers
 
     def getHeaderLine(self):
+        if isinstance(self._headers, str):
+            return self._headers
         string = ''
+        if self._headers == None:
+            return string
         for key in self._headers:
             value = self._headers[key]
             string += '%s=%s&' % (key, urllib_parse.quote_plus(value))
@@ -56,15 +60,6 @@ class VideoItem(Item, object):
 
     def setPlot(self, plot):
         self.setInfo('plot', plot)
-
-    def setUrl(self, url):
-        self._url = url
-
-    def setImage(self, image):
-        self._image = image
-
-    def setFanart(self, fanart):
-        self._fanart = fanart
 
     def getTitle(self):
         return self._title

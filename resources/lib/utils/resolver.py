@@ -34,7 +34,7 @@ def resolve(source):
             try:
                 result = _resolve(source)
                 if result:
-                    utils.debug('url %s resolved: %s' % (source, resolved))
+                    utils.debug('url %s resolved: %s' % (source, result))
                     return result
             except:
                 pass
