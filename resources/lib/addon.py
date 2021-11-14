@@ -9,9 +9,13 @@ from six.moves import urllib_parse
 
 from utils.utils import debug, b64load,  notify
 from utils import logger
-from utils.items import videoitem
+
+from utils.items.videoitem import VideoItem
+from utils.items.directory import Directory
+from utils.items.item import Item
 
 from utils.settings import *
+from utils.icons import *
 
 
 # params = {
@@ -26,11 +30,13 @@ from utils.settings import *
 #    'referer': '', #plain text string
 # }
 
-
+# Main Menu
 @router.route('/', url=False, request=False)
 def _():
-
-    return
+    dir = Directory(ADDON_NAME)
+    dir.addItem(Item('History', router.url_for('/history'), ICON_USER))
+    dir.addItem(Item('History', router.url_for('/settings'), ICON_PROGRAM))
+    dir.render()
 
 
 # route with url
@@ -129,8 +135,8 @@ def _():
 
     mode = PLAY_MODE_HLS
     # Create Item
-    kodiItem = videoitem.VideoItem(title=title, path=url,
-                                   subtitles=subtitles, headers=headers)
+    kodiItem = VideoItem(title=title, path=url,
+                         subtitles=subtitles, headers=headers)
     if mode == PLAY_MODE_DASH:
         kodiItem.playDash()
     elif mode == PLAY_MODE_HLS:
