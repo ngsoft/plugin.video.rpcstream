@@ -59,7 +59,8 @@ def _():
 
     for (id, title, path) in hist.getIterator():
         cnt += 1
-        dir.addItem(Item(title, path, ICON_VIDEO, True))
+
+        dir.addItem(Item(title, path, ICON_VIDEO, False))
 
     if cnt == 0:
         dir.addItem(Item('No entry found.', router.url_for(
@@ -75,6 +76,8 @@ def _():
 @router.route('/history', clear=True)
 def _():
     if confirm('Would you like to clear the history.') == True:
+        hist = History()
+        hist.clear()
         alert('History Cleared !')
 
     router.redirect('/')
@@ -85,7 +88,7 @@ def _():
     show_settings()
 
 
-@router.route('/play')
+@router.route('/play', cache=False)
 def _():
     currentURL = router.url
     hist = History()
