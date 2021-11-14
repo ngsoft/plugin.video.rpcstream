@@ -14,9 +14,9 @@ except:
         return re.match(r"(?:" + regex + r")\Z", string, flags=flags)
 
 
-def redirect(full_path, keepQueryString=False, args=None):
+def redirect(full_path, args=None):
     global url
-    url = url_for(full_path, keepQueryString, args)
+    url = url_for(full_path,  args)
     debug('redirecting to %s' % (url))
     urlparse()
     run()
@@ -64,20 +64,26 @@ def run():
                     return
 
 
-def url_for(full_path, keepQueryString=False, args=None):
+def url_for(full_path, args=None):
     result = base_url + full_path
-    if keepQueryString == True and query_str:
-        result += '?' + query_str
+
+    if isinstance(args, str):
+        qs = args
+        if args.startswith('?'):
+            qs = args[1:]
+        result += '?' + qs
+
     elif isinstance(args, dict):
         qs = get_query_string(args)
         result += '?' + qs
+
     return result
 
 
 def get_query_params(queryString=None):
     result = {}
-    if queryString == None and query_str:
-        queryString = query_str
+    if queryString == None and query_string:
+        queryString = query_string
     if len(queryString) > 0:
         if queryString.startswith('?'):
             queryString = queryString[1:]
@@ -87,18 +93,17 @@ def get_query_params(queryString=None):
 
 def get_query_string(params=None):
     if params == None:
-        return query_str
-
+        return query_string
     if isinstance(params, dict):
         return parser.urlencode(params)
 
 
 def urlparse():
-    global base_url, full_path, path, query, query_str
-    (scheme, netloc, path, params, query_str, fragment) = parser.urlparse(url)
+    global base_url, full_path, path, query, query_string
+    (scheme, netloc, path, params, query_string, fragment) = parser.urlparse(url)
     base_url = '%s://%s' % (scheme, netloc)
-    full_path = '%s?%s' % (path, query_str) if query_str else path
-    query = parser.parse_qs(query_str)
+    full_path = '%s?%s' % (path, query_string) if query_string else path
+    query = parser.parse_qs(query_string)
 
 
 base_url = None
@@ -106,7 +111,7 @@ full_path = None
 handle = int(sys.argv[1])
 path = None
 query = None
-query_str = None
+query_string = None
 routedict = {}
 url = sys.argv[0] + sys.argv[2]
 urlparse()

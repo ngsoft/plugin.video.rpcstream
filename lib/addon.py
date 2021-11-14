@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
+from .utils import resolver
+from .models import History
+from .items import *
+from .icons import *
+from .constants import *
+from .utils import *
 import base64
 import re
-from six.moves import urllib_parse
+import six
 
-
-from .constants import *
-
-from .utils.settings import *
-from .utils.icons import *
-
-from items import *
-
-from .utils.history import History
-
-from .utils.utils import debug, b64load,  notify, alert, confirm
-from .utils import resolver, logger, router
+urllib_parse = six.moves.urllib_parse
 
 
 # params = {
@@ -88,7 +83,7 @@ def _():
     show_settings()
 
 
-@router.route('/play', cache=False)
+@router.route('/play', id=False)
 def _():
     currentURL = router.url
     hist = History()
