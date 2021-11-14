@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import six.moves.urllib_parse as parser
-from utils import debug
+from .utils import debug
 
 try:
     from re import fullmatch

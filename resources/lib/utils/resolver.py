@@ -27,7 +27,13 @@ if SETTING_URLRESOLVER == True:
 
 ENABLED = SETTING_URLRESOLVER == True or SETTING_RESOLVEURL == True
 
+if ENABLED == True:
+    utils.debug('Resolver enabled.')
+else:
+    utils.debug('Resolver disabled.')
 
+
+# Chain the resolvers and returns first match
 def resolve(source):
     if len(_resolvers) > 0:
         for _resolve in _resolvers:
@@ -38,4 +44,4 @@ def resolve(source):
                     return result
             except:
                 pass
-    return source
+    return None

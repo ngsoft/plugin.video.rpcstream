@@ -1,23 +1,20 @@
 # -*- coding: utf-8 -*-
 import base64
 import re
-
-from six.moves.urllib import request
-from utils import router
-from utils.constants import *
 from six.moves import urllib_parse
 
-from utils.utils import debug, b64load,  notify, alert, confirm
-from utils import logger
 
-from utils.items.videoitem import VideoItem
-from utils.items.directory import Directory
-from utils.items.item import Item
+from .utils.constants import *
+from .utils.settings import *
+from .utils.icons import *
 
-from utils.settings import *
-from utils.icons import *
+from .utils.items.videoitem import VideoItem
+from .utils.items.directory import Directory
+from .utils.items.item import Item
+from .utils.history import History
 
-from utils import resolver
+from .utils.utils import debug, b64load,  notify, alert, confirm
+from .utils import resolver, logger, router
 
 
 # params = {
@@ -83,6 +80,8 @@ def _():
 
 @router.route('/play')
 def _():
+    currentURL = router.url
+    hist = History()
     url = None
     subtitles = None
     mode = None
@@ -157,23 +156,30 @@ def _():
         logger.error(msg)
         notify(msg)
 
+    result = False
     if resolver.ENABLED == True:
         resolved = resolver.resolve(url)
-        if resolved != url and isinstance(resolved, str):
+        if resolved:
             kodiItem = VideoItem(title=title, path=resolved,
                                  subtitles=subtitles, headers=None)
-            kodiItem.play()
+            result = kodiItem.play()
+            if result == True and hist.has(currentURL) == False:
+                hist.add(title, currentURL)
+            hist.close()
             return
 
     # Create Item
     kodiItem = VideoItem(title=title, path=url,
                          subtitles=subtitles, headers=headers)
     if mode == PLAY_MODE_DASH:
-        kodiItem.playDash()
+        result = kodiItem.playDash()
     elif mode == PLAY_MODE_HLS:
-        kodiItem.playHLS()
+        result = kodiItem.playHLS()
     else:
-        kodiItem.play()
+        result = kodiItem.play()
+    if result == True and hist.has(currentURL) == False:
+        hist.add(title, currentURL)
+    hist.close()
 
 
 router.run()
