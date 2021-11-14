@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from .db import SQLiteDataBase
 from .constants import SETTING_HISTORY
 
@@ -9,8 +8,8 @@ class History(SQLiteDataBase, object):
 
     def __init__(self):
         SQLiteDataBase.__init__(self, 'history')
-        self._enabled = SETTING_HISTORY > 0
         self._max = SETTING_HISTORY
+        self._enabled = self._max > 0
         self.create()
         self.cleanUP()
 
@@ -25,7 +24,8 @@ class History(SQLiteDataBase, object):
             for id in ids:
                 cnt += 1
                 if cnt > self._max:
-                    self.delete(id)
+                    self.execQuery('DELETE FROM history WHERE id < ?', [id])
+                    break
 
     def clear(self):
         if self._enabled:
@@ -34,12 +34,12 @@ class History(SQLiteDataBase, object):
     def add(self, title, path):
         if self._enabled:
             self.execQuery(
-                'INSERT INTO history (title, path) VALUES (?, ?)', (title, path))
+                'INSERT INTO history (title, path) VALUES (?, ?)', [title, path])
 
     def has(self, path):
         if self._enabled:
             result = self.fetchOne(
-                'SELECT id FROM history WHERE path = ?', (path))
+                'SELECT id FROM history WHERE path = ?', [path])
             if result == None:
                 return False
             return True
@@ -47,9 +47,9 @@ class History(SQLiteDataBase, object):
 
     def delete(self, id):
         if self._enabled:
-            self.execQuery('DELETE FROM history WHERE id = ?', (id))
+            self.execQuery('DELETE FROM history WHERE id = ?', [id])
 
-    def get(self):
+    def getIterator(self):
         if self._enabled:
-            for (id, title, path) in self.fetchMany('SELECT * FROM history ORDER BY id DESC', max=self._max):
+            for (id, title, path) in self.fetchMany('SELECT id, title, path FROM history ORDER BY id DESC', max=self._max):
                 yield id, title, path

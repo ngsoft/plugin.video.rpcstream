@@ -53,13 +53,20 @@ def _():
 
 @router.route('/history', clear=False)
 def _():
-
+    hist = History()
+    cnt = 0
     dir = Directory('videos')
-    dir.addItem(Item('No entry found.', router.url_for(
-        '/'), ICON_RECENTLYADDEDEPISODES))
 
-    dir.addItem(Item('Clear History.', router.url_for(
-        '/history?clear=1'), ICON_TVSHOWS, True))
+    for (id, title, path) in hist.getIterator():
+        cnt += 1
+        dir.addItem(Item(title, path, ICON_VIDEO, True))
+
+    if cnt == 0:
+        dir.addItem(Item('No entry found.', router.url_for(
+            '/'), ICON_RECENTLYADDEDEPISODES))
+    else:
+        dir.addItem(Item('Clear History.', router.url_for(
+            '/history?clear=1'), ICON_TVSHOWS, True))
     dir.render()
 
     return

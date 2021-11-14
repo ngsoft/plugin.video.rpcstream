@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
-from sqlite3.dbapi2 import Cursor
 from .constants import ADDON_PATH
-from .utils import debug
 
 
 class SQLiteDataBase(object):
@@ -11,12 +9,10 @@ class SQLiteDataBase(object):
     def __init__(self, dbname='db'):
         self._connection = None
         self._db = os.path.join(ADDON_PATH, 'resources/data/%s.db' % (dbname))
-        debug(self._db)
 
     def connect(self):
         if self._connection is None:
             self._connection = sqlite3.connect(self._db)
-            debug(self._connection)
 
     def close(self):
         if self._connection is not None:

@@ -2,7 +2,7 @@
 
 from kodi_six import xbmc
 from six.moves import urllib_request, urllib_parse
-from .constants import USER_AGENT, ADDON_NAME
+from .constants import USER_AGENT, ADDON_ID
 from .utils import waitForPlayback, debug
 import time
 
@@ -23,7 +23,7 @@ def download(url, headers={'User-Agent': USER_AGENT}):
     return None
 
 
-def save(contents=None, filename='%s.srt' % (ADDON_NAME)):
+def save(contents=None, filename='%s.srt' % (ADDON_ID)):
     if contents != None:
         try:
             path = xbmc.translatePath('special://temp/%s' % (filename))
