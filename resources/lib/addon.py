@@ -54,10 +54,12 @@ def _():
 
     # legacy support
     if 'useragent' in params:
+        log('Using deprecated param: useragent')
         headers['User-Agent'] = params['useragent']
 
     # legacy support
     if 'referer' in params:
+        log('Using deprecated param: referer')
         ref = params['referer']
         headers['Referer'] = ref
         # Also add origin for cors
@@ -97,6 +99,7 @@ def _():
         logger.error(msg)
         notify(msg)
 
+    mode = PLAY_MODE_HLS
     # Create Item
     kodiItem = item.Item(title=title, url=url,
                          subtitles=subtitles, headers=headers)

@@ -22,6 +22,7 @@ except:
 ##### INPUTSTREAM ADAPTIVE #####
 IA_ADDON_TYPE = 'inputstream'
 IA_ADDON = 'inputstream.adaptive'
+IA_TESTING_ID = 'inputstream.adaptive.testing'
 IA_VERSION_KEY = '_version'
 IA_HLS_MIN_VER = '2.0.0'
 IA_PR_MIN_VER = '2.2.19'
@@ -30,7 +31,8 @@ IA_WV_MIN_VER = '2.2.27'
 
 if KODI_VERSION < 19:
     IA_ADDON_TYPE = 'inputstreamaddon'
-    IA_ADDON = 'inputstream.adaptive.testing'
+
+    #IA_ADDON = IA_TESTING_ID
 
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0'

@@ -7,13 +7,24 @@ from utils import *
 import time
 from . import subs
 
-# checks if IA Addon exists
+
 IA_ADDON_EXISTS = False
+
+# checks if IA Addon exists
 try:
     xbmcaddon.Addon(id=IA_ADDON)
     IA_ADDON_EXISTS = True
 except:
     pass
+
+# On leia using testing if available
+if KODI_VERSION == 18:
+    try:
+        xbmcaddon.Addon(id=IA_TESTING_ID)
+        IA_ADDON = IA_TESTING_ID
+        IA_ADDON_EXISTS = True
+    except:
+        pass
 
 
 class Item(object):
