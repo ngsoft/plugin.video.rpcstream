@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="General">
+        <setting id="rpcstream.notify" type="bool" label="Enable Notifications" enable="eq(1,false)" default="true"/>
+        <setting id="rpcstream.ia" type="bool" label="Use InputStream Adaptive if available" enable="eq(1,false)" default="true"/>
+        <setting id="rpcstream.debug" type="bool" label="Debug Mode" enable="eq(1,false)" default="false"/>
+    </category>
+</settings>
