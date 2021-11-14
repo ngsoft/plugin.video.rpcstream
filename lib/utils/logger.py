@@ -14,7 +14,7 @@ NONE = xbmc.LOGNONE
 
 
 def log(text, log_level=DEBUG, addon_id=ADDON_ID):
-    log_line = '[' + str(addon_id) + '] ' + str(text)
+    log_line = '[{}] {}'.format(addon_id, text)
     xbmc.log(msg=log_line, level=log_level)
 
 

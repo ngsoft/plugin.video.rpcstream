@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
-from .constants import ADDON_PATH
+from ..constants import ADDON_PATH
 
 
 class SQLiteDataBase(object):
@@ -25,9 +25,9 @@ class SQLiteDataBase(object):
             return self.getConnection().execute(query)
         return self.getConnection().execute(query, bindings)
 
-    def fetchMany(self, query, bindings=None, max=1):
+    def fetchMany(self, query, bindings=None, size=1):
         cursor = self.execQuery(query, bindings)
-        return cursor.fetchmany(max)
+        return cursor.fetchmany(size)
 
     def fetchAll(self, query, bindings=None):
         cursor = self.execQuery(query, bindings)

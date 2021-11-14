@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import sys
-import six.moves.urllib_parse as parser
-from .utils import debug
+import six
+from . import debug
+
+parser = six.moves.urllib_parse
 
 try:
     from re import fullmatch
@@ -12,9 +14,9 @@ except:
         return re.match(r"(?:" + regex + r")\Z", string, flags=flags)
 
 
-def redirect(full_path, keepQueryString=False):
+def redirect(full_path, keepQueryString=False, args=None):
     global url
-    url = url_for(full_path, keepQueryString)
+    url = url_for(full_path, keepQueryString, args)
     debug('redirecting to %s' % (url))
     urlparse()
     run()
@@ -62,10 +64,13 @@ def run():
                     return
 
 
-def url_for(full_path, keepQueryString=False):
+def url_for(full_path, keepQueryString=False, args=None):
     result = base_url + full_path
     if keepQueryString == True and query_str:
-        result += '?%s' % (query_str)
+        result += '?' + query_str
+    elif isinstance(args, dict):
+        qs = get_query_string(args)
+        result += '?' + qs
     return result
 
 

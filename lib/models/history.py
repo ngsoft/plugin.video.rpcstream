@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from ..db import SQLiteDataBase
-from .constants import SETTING_HISTORY
+from ..db import *
+from ..constants import SETTING_HISTORY
 
 
 class History(SQLiteDataBase, object):
@@ -11,21 +11,23 @@ class History(SQLiteDataBase, object):
         self._max = SETTING_HISTORY
         self._enabled = self._max > 0
         self.create()
-        self.cleanUP()
+
+    def close(self):
+        if self._connection != None:
+            self.clean()
+            SQLiteDataBase.close(self)
 
     def create(self):
         self.execQuery(
             'CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, path TEXT)')
 
-    def cleanUP(self):
-        ids = self.fetchAll('SELECT id FROM history ORDER BY id DESC')
-        cnt = 0
-        if len(ids) > self._max:
-            for id in ids:
-                cnt += 1
-                if cnt > self._max and int(id) > 0:
-                    self.execQuery('DELETE FROM history WHERE id < ?', [id])
-                    break
+    def clean(self):
+        result = self.fetchOne('SELECT id FROM history ORDER BY id DESC LIMIT ? OFFSET ?', [
+                               self._max, self._max])
+        if result != None:
+            (id) = result
+            if int(id) > 0:
+                self.execQuery('DELETE FROM history WHERE id < ?', [id])
 
     def clear(self):
         if self._enabled:
@@ -33,8 +35,9 @@ class History(SQLiteDataBase, object):
 
     def add(self, title, path):
         if self._enabled:
-            self.execQuery(
+            result = self.execQuery(
                 'INSERT INTO history (title, path) VALUES (?, ?)', [title, path])
+            return result.lastrowid
 
     def has(self, path):
         if self._enabled:
