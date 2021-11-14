@@ -80,10 +80,10 @@ class VideoItem(Item, object):
             if 'plot' not in self._info:
                 self.setInfo('plot', self._title)
 
-        li = VideoItem.getListItem(self)
+        li = Item.getListItem(self)
         headers = self.getHeaderLine()
         if self._path != None and len(headers) > 0:
-            li.setPath('%s|%s' % (self._url, headers))
+            li.setPath('%s|%s' % (self._path, headers))
         return li
 
     def getInputStreamAdaptiveListItem(self, manifest_type, mimetype):
@@ -121,20 +121,23 @@ class VideoItem(Item, object):
         li = self.getListItem()
         li.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(handle, True, li)
-
-        if not waitForPlayback(10):
-            debug('playback timeout, removing headers')
-            li.setPath(self._url)
+        waitresult = waitForPlayback(10)
+        if waitresult == False:
             if self._isIA == True:
                 debug('playback timeout, disabling %s' % (IA_ADDON))
                 li.setProperty(IA_ADDON_TYPE, '')
                 self._isIA = False
-            xbmc.Player().play(self._url, li)
-            if not waitForPlayback(10):
-                li.setProperty('IsPlayable', 'false')
-                debug('Cannot play %s: %s' % (self._title, self._url))
-                notify('Cannot play %s' % (self._title))
-            return False
+                xbmc.Player().play(self._url, li)
+                waitresult = waitForPlayback(10)
+            if waitresult == False:
+                debug('playback timeout, removing headers')
+                li.setPath(self._path)
+                xbmc.Player().play(self._path, li)
+                if not waitForPlayback(10):
+                    li.setProperty('IsPlayable', 'false')
+                    debug('Cannot play %s: %s' % (self._title, self._url))
+                    notify('Cannot play %s' % (self._title))
+                    return False
 
         notify('Playing %s' % (self._title))
 
