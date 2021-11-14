@@ -3,6 +3,9 @@
     <requires>
         <import addon="script.module.six" />
         <import addon="script.module.kodi-six" />
+        <import addon="script.module.resolveurl" optional="true" />
+        <import addon="script.module.urlresolver" optional="true" />
+
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
     </extension>

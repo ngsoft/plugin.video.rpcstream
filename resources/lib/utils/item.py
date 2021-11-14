@@ -93,17 +93,17 @@ class Item(object):
         self._isIA = True
         return li
 
-    def playHLS(self):
+    def playHLS(self, notif=False):
         li = self.getInputStreamAdaptiveListItem(
             'hls', 'application/vnd.apple.mpegurl')
         li.setProperty('%s.minversion' % (IA_ADDON), IA_HLS_MIN_VER)
-        return self.play()
+        return self.play(notif)
 
-    def playDash(self):
+    def playDash(self, notif=False):
         li = self.getInputStreamAdaptiveListItem(
             'mpd', 'application/dash+xml')
         li.setProperty('%s.minversion' % (IA_ADDON), IA_MPD_MIN_VER)
-        return self.play()
+        return self.play(notif)
 
     def play(self, notif=False):
         li = self.getListItem()

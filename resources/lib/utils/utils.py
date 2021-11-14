@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import base64
+import json
 from kodi_six import xbmc
 from .constants import ADDON, ADDON_NAME, ADDON_ICON
 from . import logger
@@ -57,15 +59,15 @@ def get_string(string_id):
 
 
 def log(message):
-    logger.warn(text=message)
+    logger.warn(text=message, addon_id=ADDON_NAME)
 
 
-def decode(str, mode='utf8'):
+def decode(string, mode='utf8'):
     try:
-        str = str.decode(mode)
+        string = str.decode(mode)
     except:
         pass
-    return str
+    return string
 
 
 def waitForPlayback(timeout=30):
@@ -75,3 +77,15 @@ def waitForPlayback(timeout=30):
         if time.time() > timer:
             return False
     return xbmc.getCondVisibility("Player.HasMedia")
+
+
+def b64load(string=None):
+
+    if string != None:
+        try:
+            decoded = base64.b64decode(string)
+            result = json.loads(decoded)
+            return result
+        except:
+            pass
+    return None

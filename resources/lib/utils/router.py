@@ -2,6 +2,7 @@
 import sys
 import six.moves.urllib_parse as parser
 
+
 try:
     from re import fullmatch
 except:
@@ -64,21 +65,23 @@ def url_for(full_path):
     return base_url + full_path
 
 
-def get_query_params(query=None):
+def get_query_params(queryString=None):
     result = {}
-    if(query == None):
-        query = ''
+    if queryString == None:
+        queryString = ''
         if len(sys.argv) > 2:
-            query = sys.argv[2][:1]
-    if(len(query > 0)):
-        result = dict(parser.parse_qsl(query))
+            queryString = sys.argv[2]
+    if len(queryString) > 0:
+        if queryString.startswith('?'):
+            queryString = queryString[1:]
+        result = dict(parser.parse_qsl(queryString))
     return result
 
 
 def urlparse():
     global base_url, full_path, path, query
     (scheme, netloc, path, params, query, fragment) = parser.urlparse(url)
-    base_url = '%s://%s' (scheme, netloc)
+    base_url = '%s://%s' % (scheme, netloc)
     full_path = '%s?%s' % (path, query) if query else path
     query = parser.parse_qs(query)
 
