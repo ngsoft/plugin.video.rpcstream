@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from kodi_six import xbmc
 from six.moves import urllib_request, urllib_parse
 from .constants import USER_AGENT, ADDON_NAME

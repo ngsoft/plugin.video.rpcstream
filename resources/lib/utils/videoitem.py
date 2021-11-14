@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+import sys
 from kodi_six import xbmcgui, xbmc, xbmcplugin
 from six.moves import urllib_parse
 from .constants import *
-from .router import handle
 from utils import *
 from . import subs
 
+handle = int(sys.argv[1])
 
 if SETTING_IA == True:
     IA_ADDON_EXISTS = False
@@ -107,6 +108,7 @@ class Item(object):
         li = self.getListItem()
         if SETTING_IA == True:
             if IA_ADDON_EXISTS == True:
+                debug('enabling %s to play %s' % (IA_ADDON, manifest_type))
                 li.setProperty(IA_ADDON_TYPE,  IA_ADDON)
                 li.setProperty('%s.manifest_type' % (IA_ADDON), manifest_type)
                 li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
@@ -139,8 +141,10 @@ class Item(object):
         xbmcplugin.setResolvedUrl(handle, True, li)
 
         if not waitForPlayback(10):
+            debug('playback timeout, removing headers')
             li.setPath(self._url)
             if self._isIA == True:
+                debug('playback timeout, disabling %s' % (IA_ADDON))
                 li.setProperty(IA_ADDON_TYPE, '')
                 self._isIA = False
             xbmc.Player().play(self._url, li)

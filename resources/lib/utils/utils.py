@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import base64
 import json
-from kodi_six import xbmc
+from kodi_six import xbmc, xbmcgui
 from .constants import ADDON, ADDON_NAME, ADDON_ICON, SETTING_DEBUG, SETTING_NOTIFY
 from . import logger
 import time
-
-from kodi_six import xbmcgui
+from six import PY2
+import codecs
 
 
 def notify(message=None, header=ADDON_NAME,  time=5000, icon=ADDON_ICON, sound=True):
@@ -28,11 +28,11 @@ def debug(message):
         logger.warn(text=message, addon_id=ADDON_NAME)
 
 
-def decode(string, mode='utf8'):
+def decode(string, mode='utf-8'):
     try:
-        string = str.decode(mode)
+        string = codecs.decode(codecs.encode(string), mode)
     except:
-        pass
+        debug('cannot decode %s' % (str(string)))
     return string
 
 

@@ -12,6 +12,7 @@ except:
     resolveurl = None
 
 RESOLVERS = {
+
     'script.module.resolveurl': resolveurl,
     'script.module.urlresolver': urlresolver
 }

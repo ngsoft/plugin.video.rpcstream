@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import base64
 import re
-import sys
 
 from six.moves.urllib import request
 from utils import router
 from utils.constants import *
 from six.moves import urllib_parse
 
-from utils.utils import debug, b64load, notify
-from utils import logger, item
+from utils.utils import debug, b64load, decode, notify
+from utils import logger, videoitem
 
 from utils.settings import *
 
@@ -57,7 +56,6 @@ def _():
 
 @router.route('/play')
 def _():
-    notif = True
     url = None
     subtitles = None
     mode = None
@@ -76,6 +74,8 @@ def _():
             title = base64.b64decode(params['title'])
         except:
             title = params['title']
+
+        #title = ensure_str(u(title))
         params['title'] = title
 
     if 'headers' in params:
@@ -99,10 +99,6 @@ def _():
             headers['Origin'] = '%s://%s' % (parsed.scheme, parsed.netloc)
 
     params['headers'] = headers
-
-    # log params
-    for key in params:
-        debug('%s => %s' % (key, params[key]))
 
     if 'subtitles' in params and params['subtitles'].startswith('http'):
         subtitles = params['subtitles']
@@ -132,18 +128,17 @@ def _():
 
     mode = PLAY_MODE_HLS
     # Create Item
-    kodiItem = item.Item(title=title, url=url,
-                         subtitles=subtitles, headers=headers)
+    kodiItem = videoitem.Item(title=title, url=url,
+                              subtitles=subtitles, headers=headers)
     if mode == PLAY_MODE_DASH:
-        kodiItem.playDash(notif)
+        kodiItem.playDash()
     elif mode == PLAY_MODE_HLS:
-        kodiItem.playHLS(notif)
+        kodiItem.playHLS()
     else:
-        kodiItem.play(notif)
+        kodiItem.play()
 
+    # log params
+    debug(params)
 
-logger.warn('notify %s' % (SETTING_NOTIFY))
-logger.warn('ia %s' % (SETTING_IA))
-logger.warn('debug %s' % (SETTING_DEBUG))
 
 router.run()
