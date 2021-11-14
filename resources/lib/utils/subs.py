@@ -1,13 +1,14 @@
 from kodi_six import xbmc
 from six.moves import urllib_request, urllib_parse
 from .constants import USER_AGENT, ADDON_NAME
-from .utils import waitForPlayback
+from .utils import waitForPlayback, debug
 import time
 
 
 def download(url, headers={'User-Agent': USER_AGENT}):
     if url != None:
         try:
+            debug('downloading subtitle %s' % (url))
             req = urllib_request.Request(url)
             for key in headers:
                 req.add_header(key, headers[key])
@@ -24,6 +25,7 @@ def save(contents=None, filename='%s.srt' % (ADDON_NAME)):
     if contents != None:
         try:
             path = xbmc.translatePath('special://temp/%s' % (filename))
+            debug('saving subtitle %s' % (path))
             with open(path, 'wb') as subfile:
                 subfile.write(contents)
                 subfile.close()
