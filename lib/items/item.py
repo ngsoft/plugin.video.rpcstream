@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from kodi_six import xbmcplugin, xbmcgui
-from ..icons import ICON_ADDON
+from kodi_six import xbmcgui
+
 
 # info labels
 # genre 	string (Comedy) or list of strings (["Comedy", "Animation", "Drama"])

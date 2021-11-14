@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import sys
 from kodi_six import xbmcgui, xbmc, xbmcplugin
-from six.moves import urllib_parse
+import six
+
 from ..constants import *
 from ..utils import *
-from .. import subs
-from .item import Item
+from ..utils import subs
+from . import Item
 
-handle = int(sys.argv[1])
+urllib_parse = six.moves.urllib_parse
+
 
 if SETTING_IA == True:
     IA_ADDON_EXISTS = False
@@ -115,7 +117,7 @@ class VideoItem(Item, object):
     def play(self):
         li = self.getListItem()
         li.setProperty('IsPlayable', 'true')
-        xbmcplugin.setResolvedUrl(handle, True, li)
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
         waitresult = waitForPlayback(10)
         if waitresult == False:
             if self._isIA == True:
