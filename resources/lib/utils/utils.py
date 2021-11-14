@@ -25,7 +25,7 @@ def get_string(string_id):
 
 def debug(message):
     if SETTING_DEBUG == True:
-        logger.warn(text=message, addon_id=ADDON_NAME)
+        logger.warn(text=message)
 
 
 def decode(string, mode='utf-8'):
