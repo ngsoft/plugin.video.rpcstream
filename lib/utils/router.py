@@ -80,6 +80,14 @@ def get_query_params(queryString=None):
     return result
 
 
+def get_query_string(params=None):
+    if params == None:
+        return query_str
+
+    if isinstance(params, dict):
+        return parser.urlencode(params)
+
+
 def urlparse():
     global base_url, full_path, path, query, query_str
     (scheme, netloc, path, params, query_str, fragment) = parser.urlparse(url)

@@ -2,10 +2,9 @@
 import base64
 import json
 from kodi_six import xbmc, xbmcgui
-from .constants import ADDON, ADDON_NAME, ADDON_ICON, SETTING_DEBUG, SETTING_NOTIFY
+from ..constants import ADDON, ADDON_NAME, ADDON_ICON, SETTING_DEBUG, SETTING_NOTIFY
 from . import logger
 import time
-import codecs
 
 
 def alert(message, title=ADDON_NAME):
@@ -33,14 +32,6 @@ def get_string(string_id):
 def debug(message):
     if SETTING_DEBUG == True:
         logger.warn(text=message)
-
-
-def decode(string, mode='utf-8'):
-    try:
-        string = codecs.decode(codecs.encode(string), mode)
-    except:
-        debug('cannot decode %s' % (str(string)))
-    return string
 
 
 def waitForPlayback(timeout=30):
