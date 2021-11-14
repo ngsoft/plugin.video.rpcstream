@@ -7,8 +7,9 @@ from utils import router
 from utils.constants import *
 from six.moves import urllib_parse
 
-from utils.utils import debug, b64load, decode, notify
-from utils import logger, videoitem
+from utils.utils import debug, b64load,  notify
+from utils import logger
+from utils.items import videoitem
 
 from utils.settings import *
 
@@ -128,8 +129,8 @@ def _():
 
     mode = PLAY_MODE_HLS
     # Create Item
-    kodiItem = videoitem.Item(title=title, url=url,
-                              subtitles=subtitles, headers=headers)
+    kodiItem = videoitem.VideoItem(title=title, url=url,
+                                   subtitles=subtitles, headers=headers)
     if mode == PLAY_MODE_DASH:
         kodiItem.playDash()
     elif mode == PLAY_MODE_HLS:

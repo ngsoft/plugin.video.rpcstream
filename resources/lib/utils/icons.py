@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # https://kodi.wiki/view/Default_Icons
 # 1.1 Add-ons
+ICON_NONE = ''
 ICON_ADDON = 'DefaultAddon.png'
 ICON_ADDONALBUMINFO = 'DefaultAddonAlbumInfo.png'
 ICON_ADDONARTISTINFO = 'DefaultAddonArtistInfo.png'

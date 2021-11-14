@@ -2,9 +2,10 @@
 import sys
 from kodi_six import xbmcgui, xbmc, xbmcplugin
 from six.moves import urllib_parse
-from .constants import *
-from utils import *
-from . import subs
+from ..constants import *
+from ..utils import *
+from .. import subs
+from .item import Item
 
 handle = int(sys.argv[1])
 
@@ -28,11 +29,11 @@ if SETTING_IA == True:
             pass
 
 
-class Item(object):
+class VideoItem(Item, object):
 
-    def __init__(self, title=None, plot=None, url=None, subtitles=None, image='', fanart='', headers={}):
+    def __init__(self, title=None, url=None, subtitles=None, plot=None, image='', fanart='', headers={}):
+        Item.__init__(self, title)
         self._listItem = xbmcgui.ListItem(offscreen=True)
-        self._title = title
         self._plot = plot
         self._url = url
         self._subtitles = subtitles
@@ -57,9 +58,6 @@ class Item(object):
 
     def setSubtitles(self, subtitles):
         self._subtitles = subtitles
-
-    def setTitle(self, title):
-        self._title = title
 
     def setPlot(self, plot):
         self._plot = plot
