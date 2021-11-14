@@ -31,14 +31,9 @@ if SETTING_IA == True:
 
 class VideoItem(Item, object):
 
-    def __init__(self, title=None, url=None, subtitles=None, plot=None, image='', fanart='', headers={}):
-        Item.__init__(self, title)
-        self._listItem = xbmcgui.ListItem(offscreen=True)
-        self._plot = plot
-        self._url = url
+    def __init__(self, title=None, path=None, subtitles=None, headers={}):
+        Item.__init__(self, title=title, path=path)
         self._subtitles = subtitles
-        self._image = image
-        self._fanart = fanart
         self._headers = headers
         self._isIA = False
 
@@ -60,7 +55,7 @@ class VideoItem(Item, object):
         self._subtitles = subtitles
 
     def setPlot(self, plot):
-        self._plot = plot
+        self.setInfo('plot', plot)
 
     def setUrl(self, url):
         self._url = url
@@ -75,31 +70,20 @@ class VideoItem(Item, object):
         return self._title
 
     def getPlot(self):
-        return self._plot
-
-    def getUrl(self):
-        return self._url
-
-    def getImage(self):
-        return self._image
-
-    def getFanart(self):
-        return self._fanart
+        if 'plot' in self._info:
+            return self._info['plot']
+        return None
 
     def getListItem(self):
-        li = self._listItem
-        title = self._title if self._title != None else ''
-        plot = self._plot if self._plot != None else title
-        headers = self.getHeaderLine()
-        if self._url != None:
-            url = '%s|%s' % (self._url, headers) if len(
-                headers) > 0 else self._url
-        li.setPath(url)
-        li.setLabel(self._title)
-        li.setInfo('video', {'title': title, 'plot': plot})
-        li.setArt({'icon': self._image, 'thumb': self._image,
-                  'fanart': self._fanart})
+        if self._title != None:
+            self.setInfo('title', self._title)
+            if 'plot' not in self._info:
+                self.setInfo('plot', self._title)
 
+        li = VideoItem.getListItem(self)
+        headers = self.getHeaderLine()
+        if self._path != None and len(headers) > 0:
+            li.setPath('%s|%s' % (self._url, headers))
         return li
 
     def getInputStreamAdaptiveListItem(self, manifest_type, mimetype):

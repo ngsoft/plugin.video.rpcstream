@@ -129,7 +129,7 @@ def _():
 
     mode = PLAY_MODE_HLS
     # Create Item
-    kodiItem = videoitem.VideoItem(title=title, url=url,
+    kodiItem = videoitem.VideoItem(title=title, path=url,
                                    subtitles=subtitles, headers=headers)
     if mode == PLAY_MODE_DASH:
         kodiItem.playDash()
