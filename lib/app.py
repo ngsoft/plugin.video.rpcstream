@@ -20,6 +20,7 @@ urllib_parse = six.moves.urllib_parse
 #    'subtitles': '', # string starting with http
 #    'headers': {}, # b64encoded json string
 #    'mode': 0,
+#    'resolve': 1, #use resolver for url
 #    deprecated:
 #    'useragent': '', #plain text string
 #    'referer': '', #plain text string
@@ -52,9 +53,7 @@ def _():
 @router.route('/history/clear')
 def _():
     if confirm('Would you like to clear the history.') == True:
-        hist = History()
         hist.clear()
-        hist.close()
         alert('History Cleared !')
 
     router.redirect('/')
@@ -65,16 +64,13 @@ def _():
 
     params = router.get_query_params()
     id = int(params['id'])
-    hist = History()
     hist.delete(id)
-    hist.close()
     alert('History entry removed.')
-    xbmc.executebuiltin('Container.Refresh')
+    refresh_ui()
 
 
 @router.route('/history')
 def _():
-    hist = History()
     cnt = 0
     dir = Directory('videos')
 
@@ -87,8 +83,6 @@ def _():
              (router.url_for('/history/delete', {'id': id})))
         ])
         dir.addItem(item)
-
-    hist.close()
 
     if cnt == 0:
         alert('History is empty.')
@@ -107,7 +101,6 @@ def _():
 @router.route('/play', id=False)
 def _():
     currentURL = router.url
-    hist = History()
     url = None
     subtitles = None
     mode = None
@@ -177,41 +170,44 @@ def _():
     debug(params)
 
     mode = int(mode)
-    if mode not in [PLAY_MODE_DEFAULT, PLAY_MODE_HLS, PLAY_MODE_DASH]:
+    if mode not in [PLAY_MODE_DEFAULT, PLAY_MODE_HLS, PLAY_MODE_DASH, PLAY_MODE_RESOLVE]:
         msg = 'Invalid mode ' + str(mode)
         logger.error(msg)
         notify(msg)
 
     result = False
-    if resolver.ENABLED == True:
-        resolved = resolver.resolve(url)
-        if resolved:
 
-            kodiItem = VideoItem(title=title, path=resolved,
-                                 subtitles=subtitles, headers=None)
-            result = kodiItem.play()
-            if result == True and hist.has(currentURL) == False:
-                hist.add(title, currentURL)
-            hist.close()
-            return
-
-    # Create Item
-    kodiItem = VideoItem(title=title, path=url,
-                         subtitles=subtitles, headers=headers)
-    if mode == PLAY_MODE_DASH:
-        result = kodiItem.playDash()
-    elif mode == PLAY_MODE_HLS:
-        result = kodiItem.playHLS()
+    if mode == PLAY_MODE_RESOLVE:
+        if resolver.ENABLED == True:
+            resolved = resolver.resolve(url)
+            if resolved:
+                kodiItem = VideoItem(title=title, path=resolved,
+                                     subtitles=subtitles)
+                result = kodiItem.play()
+            else:
+                debug('Cannot resolve steam, %s' % (url))
+                notify(
+                    'Cannot resolve stream, please make sure resolver supports the url you have provided.', icon=ICON_WARNING)
+        else:
+            debug('resolve in params and no resolver enabled, %s' % (url))
+            notify('Cannot resolve stream, resolvers are disabled',
+                   icon=ICON_WARNING)
     else:
-        result = kodiItem.play()
+        # Create Item
+        kodiItem = VideoItem(title=title, path=url,
+                             subtitles=subtitles, headers=headers)
+        if mode == PLAY_MODE_DASH:
+            result = kodiItem.playDash()
+        elif mode == PLAY_MODE_HLS:
+            result = kodiItem.playHLS()
+        else:
+            result = kodiItem.play()
     if result == True and hist.has(currentURL) == False:
         hist.add(title, currentURL)
-    hist.close()
 
 
 @router.route('/play', id=True)
 def _():
-    hist = History()
     params = router.get_query_params()
     id = int(params['id'])
     result = hist.find(id)
@@ -221,7 +217,6 @@ def _():
         return
 
     (id, title, path) = result
-    hist.close()
 
     notify('Loading %s' % (title), icon=ICON_VIDEO)
 
@@ -229,4 +224,9 @@ def _():
 
 
 def run():
+    global hist
     router.run()
+    hist.close()
+
+
+hist = History()

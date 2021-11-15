@@ -29,6 +29,10 @@ def get_string(string_id):
     return value
 
 
+def refresh_ui():
+    xbmc.executebuiltin('Container.Refresh')
+
+
 def debug(message):
     if SETTING_DEBUG == True:
         logger.warn(text=message)
