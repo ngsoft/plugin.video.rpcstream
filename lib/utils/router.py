@@ -104,6 +104,8 @@ def get_query_string(params=None):
         return query_string
     if isinstance(params, dict):
         return parser.urlencode(params)
+    elif isinstance(params, str):
+        return params
 
 
 def urlparse():

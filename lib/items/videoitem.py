@@ -31,12 +31,9 @@ class VideoItem(Item, object):
         if isinstance(self._headers, str):
             return self._headers
         string = ''
-        if self._headers == None:
-            return string
-        for key in self._headers:
-            value = self._headers[key]
-            string += '%s=%s&' % (key, urllib_parse.quote_plus(value))
-        return string.strip('&')
+        if isinstance(self._headers, dict):
+            string = router.get_query_string(self._headers)
+        return string
 
     def setSubtitles(self, subtitles):
         self._subtitles = subtitles
