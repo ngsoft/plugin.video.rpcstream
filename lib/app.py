@@ -20,7 +20,6 @@ urllib_parse = six.moves.urllib_parse
 #    'subtitles': '', # string starting with http
 #    'headers': {}, # b64encoded json string
 #    'mode': 0,
-#    'resolve': 1, #use resolver for url
 #    deprecated:
 #    'useragent': '', #plain text string
 #    'referer': '', #plain text string
@@ -177,31 +176,32 @@ def _():
 
     result = False
 
+    # Create Item
+    kodiItem = VideoItem(title=title, path=url,
+                         subtitles=subtitles, headers=headers)
+
     if mode == PLAY_MODE_RESOLVE:
         if resolver.ENABLED == True:
             resolved = resolver.resolve(url)
             if resolved:
-                kodiItem = VideoItem(title=title, path=resolved,
-                                     subtitles=subtitles)
+                kodiItem.setHeaders({})
+                kodiItem.setPath(resolved)
                 result = kodiItem.play()
             else:
-                debug('Cannot resolve steam, %s' % (url))
+                debug('Cannot resolve stream, %s' % (url))
                 notify(
                     'Cannot resolve stream, please make sure resolver supports the url you have provided.', icon=ICON_WARNING)
         else:
             debug('resolve in params and no resolver enabled, %s' % (url))
-            notify('Cannot resolve stream, resolvers are disabled',
+            notify('Cannot resolve stream, resolvers are disabled.',
                    icon=ICON_WARNING)
+    elif mode == PLAY_MODE_DASH:
+        result = kodiItem.playDash()
+    elif mode == PLAY_MODE_HLS:
+        result = kodiItem.playHLS()
     else:
-        # Create Item
-        kodiItem = VideoItem(title=title, path=url,
-                             subtitles=subtitles, headers=headers)
-        if mode == PLAY_MODE_DASH:
-            result = kodiItem.playDash()
-        elif mode == PLAY_MODE_HLS:
-            result = kodiItem.playHLS()
-        else:
-            result = kodiItem.play()
+        result = kodiItem.play()
+
     if result == True and hist.has(currentURL) == False:
         hist.add(title, currentURL)
 

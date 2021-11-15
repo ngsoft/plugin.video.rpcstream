@@ -20,9 +20,13 @@ class VideoItem(Item, object):
         self._headers = headers
         self._isIA = False
 
-    def setHeader(self, key, value):
+    def addHeader(self, key, value):
         if key != None and value != None:
             self._headers[key] = value
+
+    def setHeaders(self, headers):
+        if isinstance(headers, dict) or isinstance(headers, str):
+            self._headers = headers
 
     def getHeaders(self):
         return self._headers
