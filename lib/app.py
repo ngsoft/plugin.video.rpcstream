@@ -36,12 +36,14 @@ def _():
 
 
 # route with url
+# legacy support, please use '/play' directly
 @router.route('/', url=True)
 def _():
     router.redirect('/play', router.query_string)
 
 
 # route with request
+# legacy support, please use '/play' directly
 @router.route('/', request=True)
 def _():
     router.redirect('/play', router.query_string)
@@ -52,6 +54,7 @@ def _():
     if confirm('Would you like to clear the history.') == True:
         hist = History()
         hist.clear()
+        hist.close()
         alert('History Cleared !')
 
     router.redirect('/')
@@ -132,17 +135,17 @@ def _():
         if newheaders != None:
             headers = newheaders
 
-    # legacy support
+    # legacy support, please use headers
     if 'useragent' in params:
         debug('Using deprecated param: useragent')
         headers['User-Agent'] = params['useragent']
 
-    # legacy support
+    # legacy support, please use headers
     if 'referer' in params:
         debug('Using deprecated param: referer')
         ref = params['referer']
         headers['Referer'] = ref
-        # Also add origin for cors
+        # Also add origin for cors (hls...)
         if 'Origin' not in headers:
             parsed = urllib_parse.urlparse(ref)
             headers['Origin'] = '%s://%s' % (parsed.scheme, parsed.netloc)
@@ -214,7 +217,7 @@ def _():
     result = hist.find(id)
     if result == None:
         debug('Cannot find history entry with id %s' % (id))
-        notify('Cannot find video!')
+        notify('Cannot find video!', icon=ICON_WARNING)
         return
 
     (id, title, path) = result
