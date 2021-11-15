@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.rpcstream" name="RPC Stream" version="1.2.0" provider-name="NGSOFT">
+<addon id="plugin.video.rpcstream" name="RPCStream" version="1.2.0" provider-name="NGSOFT">
     <requires>
         <import addon="script.module.six" />
         <import addon="script.module.kodi-six" />
@@ -8,6 +8,7 @@
         <import addon="inputstream.adaptive" optional="true" />
         <import addon="inputstream.adaptive.testing" optional="true" />
     </requires>
+    <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>

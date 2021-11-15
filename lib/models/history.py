@@ -33,6 +33,13 @@ class History(SQLiteDataBase, object):
         if self._enabled:
             self.execQuery('DROP TABLE IF EXISTS history')
 
+    def find(self, id=None):
+        result = None
+        if isinstance(id, int):
+            result = self.fetchOne(
+                'SELECT id, title, path FROM history WHERE id = ?', [id])
+        return result
+
     def add(self, title, path):
         if self._enabled:
             result = self.execQuery(
@@ -54,5 +61,5 @@ class History(SQLiteDataBase, object):
 
     def getIterator(self):
         if self._enabled:
-            for (id, title, path) in self.fetchMany('SELECT id, title, path FROM history ORDER BY id DESC', max=self._max):
+            for (id, title, path) in self.fetchMany('SELECT id, title, path FROM history ORDER BY id DESC', size=self._max):
                 yield id, title, path

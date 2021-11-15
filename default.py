@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from lib import addon
+from lib import app
 
-
-addon.run()
+app.run()

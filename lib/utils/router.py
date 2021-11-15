@@ -22,6 +22,14 @@ def redirect(full_path, args=None):
     run()
 
 
+def redirect_to_path(full_path):
+    global url
+    url = full_path
+    debug('redirecting to %s' % (url))
+    urlparse()
+    run()
+
+
 def route(rule, **options):
     def decorator(function):
         if function in routedict:

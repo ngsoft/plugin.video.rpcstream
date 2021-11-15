@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from kodi_six import xbmc
 from .utils import resolver
 from .models import History
 from .items import *
@@ -37,38 +38,16 @@ def _():
 # route with url
 @router.route('/', url=True)
 def _():
-    router.redirect('/play', True)
+    router.redirect('/play', router.query_string)
 
 
 # route with request
 @router.route('/', request=True)
 def _():
-    router.redirect('/play', True)
+    router.redirect('/play', router.query_string)
 
 
-@router.route('/history', clear=False)
-def _():
-    hist = History()
-    cnt = 0
-    dir = Directory('videos')
-
-    for (id, title, path) in hist.getIterator():
-        cnt += 1
-
-        dir.addItem(Item(title, path, ICON_VIDEO, False))
-
-    if cnt == 0:
-        dir.addItem(Item('No entry found.', router.url_for(
-            '/'), ICON_RECENTLYADDEDEPISODES))
-    else:
-        dir.addItem(Item('Clear History.', router.url_for(
-            '/history?clear=1'), ICON_TVSHOWS, True))
-    dir.render()
-
-    return
-
-
-@router.route('/history', clear=True)
+@router.route('/history/clear')
 def _():
     if confirm('Would you like to clear the history.') == True:
         hist = History()
@@ -76,6 +55,45 @@ def _():
         alert('History Cleared !')
 
     router.redirect('/')
+
+
+@router.route('/history/delete', id=True)
+def _():
+
+    params = router.get_query_params()
+    id = int(params['id'])
+    hist = History()
+    hist.delete(id)
+    hist.close()
+    alert('History entry removed.')
+    xbmc.executebuiltin('Container.Refresh')
+
+
+@router.route('/history')
+def _():
+    hist = History()
+    cnt = 0
+    dir = Directory('videos')
+
+    for (id, title, path) in hist.getIterator():
+        cnt += 1
+        item = Item(title, router.url_for(
+            '/play', {'id': id}), ICON_VIDEO, False, False)
+        item.getListItem().addContextMenuItems([
+            ('Remove entry', 'RunPlugin(%s)' %
+             (router.url_for('/history/delete', {'id': id})))
+        ])
+        dir.addItem(item)
+
+    hist.close()
+
+    if cnt == 0:
+        alert('History is empty.')
+        router.redirect('/')
+    else:
+        dir.addItem(Item('Clear History.', router.url_for(
+            '/history/clear'), ICON_PROGRAM, True))
+        dir.render()
 
 
 @router.route('/settings')
@@ -165,6 +183,7 @@ def _():
     if resolver.ENABLED == True:
         resolved = resolver.resolve(url)
         if resolved:
+
             kodiItem = VideoItem(title=title, path=resolved,
                                  subtitles=subtitles, headers=None)
             result = kodiItem.play()
@@ -185,6 +204,25 @@ def _():
     if result == True and hist.has(currentURL) == False:
         hist.add(title, currentURL)
     hist.close()
+
+
+@router.route('/play', id=True)
+def _():
+    hist = History()
+    params = router.get_query_params()
+    id = int(params['id'])
+    result = hist.find(id)
+    if result == None:
+        debug('Cannot find history entry with id %s' % (id))
+        notify('Cannot find video!')
+        return
+
+    (id, title, path) = result
+    hist.close()
+
+    notify('Loading %s' % (title), icon=ICON_VIDEO)
+
+    router.redirect_to_path(path)
 
 
 def run():

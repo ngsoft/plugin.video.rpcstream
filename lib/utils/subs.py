@@ -3,7 +3,7 @@
 from kodi_six import xbmc
 import six
 from ..constants import USER_AGENT, ADDON_ID
-from . import waitForPlayback, debug
+from .utils import waitForPlayback, debug
 import time
 
 urllib_request = six.moves.urllib.request

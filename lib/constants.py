@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from kodi_six import xbmc, xbmcaddon
-from utils import settings
+from .utils import settings
 
 ##### ADDON ####
 ADDON = xbmcaddon.Addon(os.environ.get('ADDON_ID', ''))
@@ -20,6 +20,27 @@ try:
 except:
     KODI_VERSION = 16
 
+
+##### ADDON SPECIFICS #####
+
+PLAY_MODE_DEFAULT = 0
+PLAY_MODE_DASH = 1
+PLAY_MODE_HLS = 2
+
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0'
+
+##### SETTINGS #####
+
+# <setting id="rpcstream.notify" type="bool" label="Enable Notifications" default="true"/>
+SETTING_NOTIFY = settings.get_setting_as_bool('rpcstream.notify')
+# <setting id="rpcstream.ia" type="bool" label="Use InputStream Adaptive if available" default="true"/>
+SETTING_IA = settings.get_setting_as_bool('rpcstream.ia')
+# <setting id="rpcstream.debug" type="bool" label="Debug Mode" default="false"/>
+SETTING_DEBUG = settings.get_setting_as_bool('rpcstream.debug')
+# <setting id="rpcstream.history" label="History Size" type="slider" default="50" range="0,10,500" option="int"/>
+SETTING_HISTORY = settings.get_setting_as_int('rpcstream.history')
+
+
 ##### INPUTSTREAM ADAPTIVE #####
 IA_ADDON_TYPE = 'inputstream'
 IA_ADDON = 'inputstream.adaptive'
@@ -33,25 +54,22 @@ IA_WV_MIN_VER = '2.2.27'
 if KODI_VERSION < 19:
     IA_ADDON_TYPE = 'inputstreamaddon'
 
-    #IA_ADDON = IA_TESTING_ID
 
+if SETTING_IA == True:
+    IA_ADDON_EXISTS = False
 
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0'
+    # checks if IA Addon exists
+    try:
+        xbmcaddon.Addon(id=IA_ADDON)
+        IA_ADDON_EXISTS = True
+    except:
+        pass
 
-##### ADDON SPECIFICS #####
-
-PLAY_MODE_DEFAULT = 0
-PLAY_MODE_DASH = 1
-PLAY_MODE_HLS = 2
-
-
-##### SETTINGS #####
-
-# <setting id="rpcstream.notify" type="bool" label="Enable Notifications" default="true"/>
-SETTING_NOTIFY = settings.get_setting_as_bool('rpcstream.notify')
-# <setting id="rpcstream.ia" type="bool" label="Use InputStream Adaptive if available" default="true"/>
-SETTING_IA = settings.get_setting_as_bool('rpcstream.ia')
-# <setting id="rpcstream.debug" type="bool" label="Debug Mode" default="false"/>
-SETTING_DEBUG = settings.get_setting_as_bool('rpcstream.debug')
-# <setting id="rpcstream.history" label="History Size" type="slider" default="50" range="0,10,500" option="int"/>
-SETTING_HISTORY = settings.get_setting_as_int('rpcstream.history')
+    # On leia using testing if available
+    if KODI_VERSION == 18:
+        try:
+            xbmcaddon.Addon(id=IA_TESTING_ID)
+            IA_ADDON = IA_TESTING_ID
+            IA_ADDON_EXISTS = True
+        except:
+            pass

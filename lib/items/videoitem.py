@@ -4,29 +4,12 @@ import six
 from kodi_six import xbmc, xbmcplugin
 from ..constants import *
 from ..utils import *
-from . import Item
+from .item import Item
 
 urllib_parse = six.moves.urllib_parse
 
-
-if SETTING_IA == True:
-    IA_ADDON_EXISTS = False
-
-    # checks if IA Addon exists
-    try:
-        xbmcaddon.Addon(id=IA_ADDON)
-        IA_ADDON_EXISTS = True
-    except:
-        pass
-
-    # On leia using testing if available
-    if KODI_VERSION == 18:
-        try:
-            xbmcaddon.Addon(id=IA_TESTING_ID)
-            IA_ADDON = IA_TESTING_ID
-            IA_ADDON_EXISTS = True
-        except:
-            pass
+if IA_ADDON_EXISTS == True:
+    debug('%s is enabled.' % (IA_ADDON))
 
 
 class VideoItem(Item, object):
@@ -122,7 +105,7 @@ class VideoItem(Item, object):
                 debug('playback timeout, disabling %s' % (IA_ADDON))
                 li.setProperty(IA_ADDON_TYPE, '')
                 self._isIA = False
-                xbmc.Player().play(self._url, li)
+                xbmc.Player().play(self._path, li)
                 waitresult = waitForPlayback(10)
             if waitresult == False:
                 debug('playback timeout, removing headers')
@@ -130,7 +113,7 @@ class VideoItem(Item, object):
                 xbmc.Player().play(self._path, li)
                 if not waitForPlayback(10):
                     li.setProperty('IsPlayable', 'false')
-                    debug('Cannot play %s: %s' % (self._title, self._url))
+                    debug('Cannot play %s: %s' % (self._title, self._path))
                     notify('Cannot play %s' % (self._title))
                     return False
 

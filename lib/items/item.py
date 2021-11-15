@@ -56,7 +56,7 @@ from kodi_six import xbmcgui
 
 class Item(object):
 
-    def __init__(self, title=None, path=None, icon='', isDir=False):
+    def __init__(self, title=None, path=None, icon='', isDir=False, offscreen=True):
 
         self._title = title
         self._path = path
@@ -69,7 +69,7 @@ class Item(object):
 
         self._isDir = bool(isDir)
         self._info = {}
-        self._listItem = xbmcgui.ListItem(offscreen=True)
+        self._listItem = xbmcgui.ListItem(offscreen=offscreen)
 
     def setTitle(self, title):
         self._title = title

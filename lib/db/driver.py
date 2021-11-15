@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
-from ..constants import ADDON_PATH
+from ..constants import ADDON_PROFILE
 
 
 class SQLiteDataBase(object):
 
     def __init__(self, dbname='db'):
         self._connection = None
-        self._db = os.path.join(ADDON_PATH, 'resources/data/%s.db' % (dbname))
+        self._db = os.path.join(ADDON_PROFILE, '%s.db' % (dbname))
 
     def connect(self):
         if self._connection is None:
