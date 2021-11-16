@@ -12,7 +12,7 @@ _resolvers = []
 if SETTING_RESOLVEURL == True:
     try:
         import resolveurl
-        _resolvers.append(resolveurl.resolve)
+        _resolvers.append(resolveurl)
     except:
         SETTING_RESOLVEURL = False
         settings.set_setting('rpcstream.resolveurl', SETTING_RESOLVEURL)
@@ -20,7 +20,7 @@ if SETTING_RESOLVEURL == True:
 if SETTING_URLRESOLVER == True:
     try:
         import urlresolver
-        _resolvers.append(urlresolver.resolve)
+        _resolvers.append(urlresolver)
     except:
         SETTING_URLRESOLVER = False
         settings.set_setting('rpcstream.urlresolver', SETTING_URLRESOLVER)
@@ -35,13 +35,15 @@ else:
 
 # Chain the resolvers and returns first match
 def resolve(source):
-    if len(_resolvers) > 0:
-        for _resolve in _resolvers:
-            try:
-                result = _resolve(source)
-                if result:
-                    utils.debug('url %s resolved: %s' % (source, result))
-                    return result
-            except:
-                pass
-    return None
+    result = None
+    for _resolver in _resolvers:
+        try:
+            if _resolver.HostedMediaFile(source):
+                resolved = _resolver.resolve(source)
+                if resolved:
+                    utils.debug('url %s resolved: %s' % (source, resolved))
+                    result = resolved
+                    break
+        except:
+            pass
+    return result
