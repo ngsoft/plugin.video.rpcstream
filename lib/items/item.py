@@ -95,6 +95,11 @@ class Item(object):
     def setInfo(self, key, value):
         self._info[key] = value
 
+    def setInfos(self, infos):
+        if isinstance(infos, dict):
+            for key in infos:
+                self.setInfo(key, infos[key])
+
     def getTitle(self):
         return self._label
 
@@ -116,7 +121,12 @@ class Item(object):
     def getPath(self):
         return self._path
 
-    def getInfo(self):
+    def getInfo(self, key):
+        if key in self._info:
+            return self._info[key]
+        return None
+
+    def getInfos(self):
         return self._info
 
     def getIsDir(self):
@@ -125,7 +135,6 @@ class Item(object):
     def getListItem(self):
         li = self._listItem
         li.setLabel(self._title)
-        # li.setIsFolder(self._isDir)
         li.setArt({
             'thumb': self._thumb,
             'poster': self._poster,
