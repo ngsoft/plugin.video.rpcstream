@@ -99,7 +99,6 @@ def _():
 
 @router.route('/play', id=False)
 def _():
-    currentURL = router.url
     url = None
     subtitles = None
     mode = None
@@ -202,8 +201,8 @@ def _():
     else:
         result = kodiItem.play()
 
-    if result == True and hist.has(currentURL) == False:
-        hist.add(title, currentURL)
+    if result == True and hist.has(router.url) == False:
+        hist.add(title, router.url)
 
 
 @router.route('/play', id=True)
