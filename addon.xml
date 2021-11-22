@@ -8,7 +8,7 @@
         <import addon="inputstream.adaptive" optional="true" />
         <import addon="inputstream.adaptive.testing" optional="true" />
     </requires>
-    <extension point="xbmc.python.module" library="lib" />
+    <!-- <extension point="xbmc.python.module" library="lib" /> -->
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
