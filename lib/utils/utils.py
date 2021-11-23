@@ -41,10 +41,19 @@ def debug(message):
 def waitForPlayback(timeout=30):
     timer = time.time() + timeout
     while not xbmc.getCondVisibility("Player.HasMedia"):
-        xbmc.sleep(50)
+        xbmc.sleep(100)
         if time.time() > timer:
             return False
-    return xbmc.getCondVisibility("Player.HasMedia")
+    return isPlaying()
+
+
+def isPlaying(timeout=10):
+    timer = time.time() + timeout
+    while not xbmc.Player().isPlaying():
+        xbmc.sleep(100)
+        if time.time() > timer:
+            return False
+    return xbmc.Player().isPlaying()
 
 
 def b64load(string=None):

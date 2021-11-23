@@ -118,13 +118,15 @@ def _():
         except:
             title = params['title']
 
-        #title = ensure_str(u(title))
         params['title'] = title
 
     if 'headers' in params:
-        newheaders = b64load(params['headers'])
-        if newheaders != None:
-            headers = newheaders
+        if(isinstance(params['headers'], str)):
+            newheaders = b64load(params['headers'])
+            if newheaders != None:
+                params['headers'] = newheaders
+        if isinstance(params['headers'], dict):
+            headers = params['headers']
 
     # legacy support, please use headers
     if 'useragent' in params:
@@ -180,7 +182,7 @@ def _():
                          subtitles=subtitles, headers=headers)
 
     if mode == PLAY_MODE_RESOLVE:
-        if resolver.ENABLED == True:
+        if resolver.ENABLED:
             resolved = resolver.resolve(url)
             if resolved:
                 kodiItem.setHeaders({})
@@ -201,7 +203,7 @@ def _():
     else:
         result = kodiItem.play()
 
-    if result == True and hist.has(router.url) == False:
+    if result and hist.has(router.url) == False:
         hist.add(title, router.url)
 
 

@@ -41,14 +41,9 @@ def save(contents=None, filename='%s.srt' % (ADDON_ID)):
     return None
 
 
-def set(file=None, timeout=30):
+def set(file=None, timeout=10):
     if file != None:
-        if waitForPlayback(10):
-            timer = time.time() + timeout
-            while not xbmc.Player().isPlaying():
-                xbmc.sleep(1000)
-                if time.time() > timer:
-                    return False
+        if waitForPlayback(timeout):
             xbmc.Player().setSubtitles(file)
             return True
     return False

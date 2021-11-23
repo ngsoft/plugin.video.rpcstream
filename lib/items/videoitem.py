@@ -75,6 +75,7 @@ class VideoItem(Item, object):
                 li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
                 li.setProperty('%s.stream_headers' %
                                (IA_ADDON), self.getHeaderLine())
+                li.setMimeType(mimetype)
                 self._isIA = True
             else:
                 debug('%s not present, functionality disabled.' % (IA_ADDON))
@@ -96,23 +97,24 @@ class VideoItem(Item, object):
             li.setProperty('%s.minversion' % (IA_ADDON), IA_MPD_MIN_VER)
         return self.play()
 
-    def play(self):
+    def play(self, timeout=10):
+
         li = self.getListItem()
         li.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-        waitresult = waitForPlayback(10)
+        waitresult = waitForPlayback(timeout)
         if waitresult == False:
             if self._isIA == True:
                 debug('playback timeout, disabling %s' % (IA_ADDON))
                 li.setProperty(IA_ADDON_TYPE, '')
                 self._isIA = False
                 xbmc.Player().play(self._path, li)
-                waitresult = waitForPlayback(10)
+                waitresult = waitForPlayback(timeout)
             if waitresult == False:
                 debug('playback timeout, removing headers')
                 li.setPath(self._path)
                 xbmc.Player().play(self._path, li)
-                if not waitForPlayback(10):
+                if not waitForPlayback(timeout):
                     li.setProperty('IsPlayable', 'false')
                     debug('Cannot play %s: %s' % (self._title, self._path))
                     notify('Cannot play %s' % (self._title))
@@ -131,5 +133,4 @@ class VideoItem(Item, object):
             if set == False:
                 debug('Cannot set subtitles %s' % (self._subtitles))
                 notify('Cannot load subtitles.')
-
         return True
