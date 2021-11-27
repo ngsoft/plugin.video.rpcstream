@@ -116,8 +116,6 @@ class VideoItem(Item, object):
                 xbmc.Player().play(self._path, li)
                 if not waitForPlayback(timeout):
                     li.setProperty('IsPlayable', 'false')
-                    debug('Cannot play %s: %s' % (self._title, self._path))
-                    notify('Cannot play %s' % (self._title))
                     return False
 
         notify('Playing %s' % (self._title))

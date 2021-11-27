@@ -6,9 +6,9 @@ from ..constants import SETTING_HISTORY
 
 class History(SQLiteDataBase, object):
 
-    def __init__(self):
+    def __init__(self, max=SETTING_HISTORY):
         SQLiteDataBase.__init__(self, 'history')
-        self._max = SETTING_HISTORY
+        self._max = int(max)
         self._enabled = self._max > 0
         self.create()
 
@@ -25,13 +25,13 @@ class History(SQLiteDataBase, object):
         result = self.fetchOne('SELECT id FROM history ORDER BY id DESC LIMIT ? OFFSET ?', [
                                self._max, self._max])
         if result != None:
-            (id) = result
+            (id,) = result
             if int(id) > 0:
                 self.execQuery('DELETE FROM history WHERE id < ?', [id])
 
     def clear(self):
-        if self._enabled:
-            self.execQuery('DROP TABLE IF EXISTS history')
+        self.execQuery('DROP TABLE IF EXISTS history')
+        self.create()
 
     def find(self, id=None):
         result = None

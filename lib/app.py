@@ -123,7 +123,7 @@ def _():
     if 'headers' in params:
         if(isinstance(params['headers'], str)):
             newheaders = b64load(params['headers'])
-            if newheaders != None:
+            if isinstance(newheaders, dict):
                 params['headers'] = newheaders
         if isinstance(params['headers'], dict):
             headers = params['headers']
@@ -147,6 +147,7 @@ def _():
 
     if 'subtitles' in params and params['subtitles'].startswith('http'):
         subtitles = params['subtitles']
+
     if 'url' not in params or params['url'].startswith('http') == False:
         msg = 'Invalid URL Provided !'
         logger.error(msg)
@@ -202,8 +203,10 @@ def _():
         result = kodiItem.playHLS()
     else:
         result = kodiItem.play()
-
-    if result and hist.has(router.url) == False:
+    if not result:
+        debug('cannot play %s' % (url))
+        notify('Cannot play %s' % (title), icon=ICON_ERROR)
+    elif hist.has(router.url) == False:
         hist.add(title, router.url)
 
 
