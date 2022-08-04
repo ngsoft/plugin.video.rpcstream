@@ -88,18 +88,17 @@ class VideoItem(Item, object):
             'hls', 'application/vnd.apple.mpegurl')
         if self._isIA == True:
             li.setProperty('%s.minversion' % (IA_ADDON), IA_HLS_MIN_VER)
-        return self.play()
+        return self.play(li=li)
 
     def playDash(self):
-        li = self.getInputStreamAdaptiveListItem(
-            'mpd', 'application/dash+xml')
+        li = self.getInputStreamAdaptiveListItem('mpd', 'application/dash+xml')
         if self._isIA == True:
             li.setProperty('%s.minversion' % (IA_ADDON), IA_MPD_MIN_VER)
-        return self.play()
+        return self.play(li=li)
 
-    def play(self, timeout=10):
-
-        li = self.getListItem()
+    def play(self, timeout=10, li=None):
+        if li != None:
+            li = self.getListItem()
         li.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
         waitresult = waitForPlayback(timeout)
