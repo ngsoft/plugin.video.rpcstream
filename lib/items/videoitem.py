@@ -67,20 +67,20 @@ class VideoItem(Item, object):
 
     def getInputStreamAdaptiveListItem(self, manifest_type, mimetype):
         li = self.getListItem()
-        if SETTING_IA == True:
-            if IA_ADDON_EXISTS == True:
-                debug('enabling %s to play %s' % (IA_ADDON, manifest_type))
-                li.setProperty(IA_ADDON_TYPE,  IA_ADDON)
-                li.setProperty('%s.manifest_type' % (IA_ADDON), manifest_type)
-                li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
-                li.setProperty('%s.stream_headers' %
-                               (IA_ADDON), self.getHeaderLine())
-                li.setMimeType(mimetype)
-                self._isIA = True
-            else:
-                debug('%s not present, functionality disabled.' % (IA_ADDON))
+
+        if IA_ADDON_EXISTS == True:
+            debug('enabling %s to play %s' % (IA_ADDON, manifest_type))
+            li.setProperty(IA_ADDON_TYPE,  IA_ADDON)
+            li.setProperty('%s.manifest_type' % (IA_ADDON), manifest_type)
+            li.setProperty('%s.mimetype' % (IA_ADDON), mimetype)
+            li.setProperty('%s.stream_headers' %
+                           (IA_ADDON), self.getHeaderLine())
+            li.setMimeType(mimetype)
+            self._isIA = True
         else:
-            debug('%s disabled in settings.' % (IA_ADDON))
+            debug('%s not present or disabled, functionality disabled.' %
+                  (IA_ADDON))
+
         return li
 
     def playHLS(self):
@@ -97,7 +97,7 @@ class VideoItem(Item, object):
         return self.play(li=li)
 
     def play(self, timeout=10, li=None):
-        if li != None:
+        if li == None:
             li = self.getListItem()
         li.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)

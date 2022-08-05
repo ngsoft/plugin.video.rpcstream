@@ -55,9 +55,8 @@ IA_WV_MIN_VER = '2.2.27'
 if KODI_VERSION < 19:
     IA_ADDON_TYPE = 'inputstreamaddon'
 
-
+IA_ADDON_EXISTS = False
 if SETTING_IA == True:
-    IA_ADDON_EXISTS = False
 
     # checks if IA Addon exists
     try:
