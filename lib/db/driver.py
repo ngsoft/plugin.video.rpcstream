@@ -13,6 +13,7 @@ class SQLiteDataBase(object):
     def connect(self):
         if self._connection is None:
             self._connection = sqlite3.connect(self._db)
+            self._connection.text_factory = str
 
     def close(self):
         if self._connection is not None:
